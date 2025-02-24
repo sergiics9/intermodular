@@ -90,7 +90,7 @@ if (isset($_GET['id'])) {
                 }
             }
 
-            echo "<p class='descripcion-details'>" . htmlspecialchars($descripcion) . "</p>";
+            echo "<div class='descripcion-container'><p class='descripcion-details'>" . htmlspecialchars($descripcion) . "</p></div>";
             echo "<div class='product-details-flex' data-product-id=$id>";
 
 
