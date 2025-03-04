@@ -9,6 +9,8 @@ if (isset($_GET['busqueda'])) {
 $min = isset($_GET['min']) ? (int)$_GET['min'] : 0;
 $max = isset($_GET['max']) ? (int)$_GET['max'] : 250; // Ajusta según tu rango de precios
 $orden = isset($_GET['orden']) ? $_GET['orden'] : "";
+$categoria = isset($_GET['categoria']) ? (int)$_GET['categoria'] : 0;
+
 
 ?>
 
@@ -85,13 +87,12 @@ $orden = isset($_GET['orden']) ? $_GET['orden'] : "";
             <!-- FILTROS -->
             <section class="filtros">
                 <form class="form-filtros" method="GET" id="filtroForm">
-                    <!-- Filtro por precio -->
+                    <input type="hidden" name="categoria" value="<?php echo $categoria; ?>"> <!-- Mantiene la categoría seleccionada -->
+
                     <label for="precio">Filtrar por precio</label>
                     <div class="range-slider">
-                        <input type="range" id="minPrecio" name="min" min="0" max="250" step="1"
-                            value="<?php echo $min; ?>">
-                        <input type="range" id="maxPrecio" name="max" min="0" max="250" step="1"
-                            value="<?php echo $max; ?>">
+                        <input type="range" id="minPrecio" name="min" min="0" max="250" step="1" value="<?php echo $min; ?>">
+                        <input type="range" id="maxPrecio" name="max" min="0" max="250" step="1" value="<?php echo $max; ?>">
                         <div class="slider-track"></div>
                     </div>
                     <div class="values">
@@ -110,12 +111,19 @@ $orden = isset($_GET['orden']) ? $_GET['orden'] : "";
                         <option value="precio_desc" <?php if ($orden == "precio_desc") echo "selected"; ?>>Precio (Mayor > Menor)</option>
                     </select>
 
-
                 </form>
+
             </section>
 
             <section class="products">
                 <h2 class="h2-main">Lista de Productos</h2>
+                <nav class="categorias-nav">
+                    <a href="index.php" class="<?php echo empty($categoria) ? 'active' : ''; ?>">Todas</a>
+                    <a href="index.php?categoria=1" class="<?php echo ($categoria == 1) ? 'active' : ''; ?>">Camisetas</a>
+                    <a href="index.php?categoria=2" class="<?php echo ($categoria == 2) ? 'active' : ''; ?>">Sudaderas</a>
+                    <a href="index.php?categoria=3" class="<?php echo ($categoria == 3) ? 'active' : ''; ?>">Gorras</a>
+                </nav>
+
         </div>
         <div class="container">
             <?php
@@ -125,6 +133,13 @@ $orden = isset($_GET['orden']) ? $_GET['orden'] : "";
             if (!empty($busqueda)) {
                 $sql .= " AND nombre LIKE '%$busqueda%'";
             }
+
+            if (!empty($categoria)) {
+                $categoria_id = (int) $categoria; // Convertir a número por seguridad
+                $sql .= " AND categoria_id = $categoria_id";
+            }
+
+
 
             switch ($orden) {
                 case 'nombre_asc':
@@ -140,7 +155,7 @@ $orden = isset($_GET['orden']) ? $_GET['orden'] : "";
                     $sql .= " ORDER BY precio DESC";
                     break;
                 case 'novedades':
-                    $sql .= " ORDER BY fecha_creacion DESC"; // Si tienes una columna de fecha de creación
+                    $sql .= " ORDER BY fecha_creacion DESC";
                     break;
             }
 
@@ -184,7 +199,7 @@ $orden = isset($_GET['orden']) ? $_GET['orden'] : "";
                     echo "</div>";
                 }
             } else {
-                echo "<p>No se encontraron resultados para este producto '<strong>" . htmlspecialchars($busqueda) . "</strong>'</p>";
+                echo "<p>No se encontraron resultados para este producto </p>";
             }
             ?>
 

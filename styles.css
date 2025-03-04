@@ -950,6 +950,32 @@ input[type="range"]::-webkit-slider-thumb {
   margin-top: 5px;
 }
 
+.categorias-nav {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.categorias-nav a {
+  text-decoration: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  background-color: #ddd;
+  color: black;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.categorias-nav a:hover {
+  background-color: #bbb;
+}
+
+.categorias-nav .active {
+  background-color: #444;
+  color: white;
+}
+
 @media screen and (max-width: 768px) {
   .table-tallas,
   .table-sudaderas,
