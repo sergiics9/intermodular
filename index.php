@@ -63,7 +63,8 @@ $categoria = isset($_GET['categoria']) ? (int)$_GET['categoria'] : 0;
 
                         if (file_exists($ruta_imagen)) {
 
-                            echo "<img src='$ruta_imagen' alt='Foto de $nombre' class='profile-pic'>";
+
+                            echo "<a href='perfil.php'><img src='$ruta_imagen' alt='Foto de $nombre' class='profile-pic'></a>";
                         } else {
                             echo "<img src='images/perfiles/default.webp' alt='Foto por defecto' class='profile-pic' width='50' height='auto'>";
                         }
