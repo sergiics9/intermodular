@@ -1,17 +1,25 @@
 <?php
 include 'config.php';
 
-$nombre = $precio = $tallas = $descripcion = "";
+$nombre = $precio = $tallas = $descripcion = $categoria_id = "";
+
+// Obtener las categorías disponibles
+$categorias = [];
+$result = $conn->query("SELECT id, nombre FROM categorias");
+while ($row = $result->fetch_assoc()) {
+    $categorias[] = $row;
+}
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_POST['nombre'], $_POST['precio'], $_POST['tallas'], $_POST['descripcion'])) {
+    if (isset($_POST['nombre'], $_POST['precio'], $_POST['tallas'], $_POST['descripcion'], $_POST['categoria_id'])) {
         $nombre = $conn->real_escape_string($_POST['nombre']);
         $precio = floatval($_POST['precio']);
         $tallas = $_POST['tallas'];  // Recibimos las tallas como una cadena separada por comas
-        $descripcion = $conn->real_escape_string($_POST['descripcion']); // Capturamos la descripción
+        $descripcion = $conn->real_escape_string($_POST['descripcion']);
+        $categoria_id = intval($_POST['categoria_id']);
 
         // Insertamos el producto en la tabla productos
-        $sql = "INSERT INTO productos (nombre, precio, descripcion) VALUES ('$nombre', $precio, '$descripcion')";
+        $sql = "INSERT INTO productos (nombre, precio, descripcion, categoria_id) VALUES ('$nombre', $precio, '$descripcion', $categoria_id)";
 
         if ($conn->query($sql) === TRUE) {
             $id = $conn->insert_id; // Obtenemos el id del producto insertado
@@ -41,7 +49,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="es">
 
@@ -52,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link rel="stylesheet" href="./styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=<?php echo time(); ?>"> <!-- Hace que los cambios en el CSS se vean reflejados al recargar la página sin necesidad de borrar caché del navegador -->
+    <link rel="stylesheet" href="styles.css?v=<?php echo time(); ?>">
     <script src="./js/main.js" defer></script>
 </head>
 
@@ -76,33 +83,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <section id="agregar-producto">
             <h3 class="h3-agregar">Agregar Producto</h3>
             <form method="POST" class="form-anadir-producto" enctype="multipart/form-data">
-                <label>
-                    Nombre del Producto:
-                    <input type="text" name="nombre" value="<?php echo htmlspecialchars($nombre); ?>" required>
+                <label>Nombre del Producto: <input type="text" name="nombre" required></label>
+                <label>Precio del Producto: <input type="number" step="0.01" name="precio" required></label>
+                <label>Tallas disponibles (separadas por comas): <input type="text" name="tallas" required></label>
+                <label>Descripción del Producto: <textarea name="descripcion" required></textarea></label>
+                <label>Categoría:
+                    <select name="categoria_id" required>
+                        <option value="">Seleccione una categoría</option>
+                        <?php foreach ($categorias as $categoria): ?>
+                            <option value="<?php echo $categoria['id']; ?>"><?php echo $categoria['nombre']; ?></option>
+                        <?php endforeach; ?>
+                    </select>
                 </label>
-                <label>
-                    Precio del Producto:
-                    <input type="number" step="0.01" name="precio" value="<?php echo htmlspecialchars($precio); ?>" required>
-                </label>
-                <label>
-                    Tallas disponibles (separadas por comas sin espacios):
-                    <input type="text" name="tallas" value="<?php echo htmlspecialchars($tallas); ?>" placeholder="Ej: S,M,L,XL" required>
-                </label>
-                <label>
-                    Descripción del Producto:
-                    <textarea name="descripcion" required><?php echo htmlspecialchars($descripcion); ?></textarea>
-                </label>
-                <label>
-                    Imagen del Producto:
-                    <input type="file" name="imagen" id="imagen" required>
-                </label>
+                <label>Imagen del Producto: <input type="file" name="imagen" required></label>
                 <button type="submit">Agregar Producto</button>
             </form>
-
         </section>
 
-        <!-- Sección de vista previa -->
-        <!-- Sección de vista previa -->
         <section id="vista-previa">
             <h3>Vista Previa del Producto</h3>
             <div id="preview-container" class="product">
@@ -116,8 +113,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
         </section>
     </div>
-
 </body>
-
 
 </html>

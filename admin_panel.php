@@ -43,6 +43,8 @@ if (!isset($_SESSION['UsuarioID']) || $_SESSION['role'] != 1) {
                 <button class="admin-btn" onclick="location.href='anadir_producto.php'">Añadir Producto</button>
                 <button class="admin-btn" onclick="location.href='tabla_productos.php'">Modificar o Borrar un Producto</button>
                 <button class="admin-btn" onclick="location.href='tabla_usuarios.php'">Mostrar Usuarios Registrados</button>
+                <button class="admin-btn" onclick="location.href='vistas.php'">Informes</button>
+
             </div>
         </section>
 
