@@ -1,9 +1,4 @@
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
---
--- Servidor: 127.0.0.1
--- Tiempo de generación: 24-02-2025 a las 17:53:30
+
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -48,6 +43,39 @@ CREATE TABLE `admin_cupones` (
 -- --------------------------------------------------------
 
 --
+-- Estructura Stand-in para la vista `cantidad_productos`
+-- (Véase abajo para la vista actual)
+--
+CREATE TABLE `cantidad_productos` (
+`categoria` varchar(100)
+,`cantidad_productos` bigint(21)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura Stand-in para la vista `cantidad_productos_ordenados`
+-- (Véase abajo para la vista actual)
+--
+CREATE TABLE `cantidad_productos_ordenados` (
+`categoria` varchar(100)
+,`cantidad_productos` bigint(21)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura Stand-in para la vista `cantidad_productos_por_categoria`
+-- (Véase abajo para la vista actual)
+--
+CREATE TABLE `cantidad_productos_por_categoria` (
+`categoria` varchar(100)
+,`cantidad_productos` bigint(21)
+);
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `carrito_compra`
 --
 
@@ -66,8 +94,17 @@ CREATE TABLE `carrito_compra` (
 
 CREATE TABLE `categorias` (
   `id` int(11) NOT NULL,
-  `nombre` varchar(100) DEFAULT NULL
+  `nombre` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `categorias`
+--
+
+INSERT INTO `categorias` (`id`, `nombre`) VALUES
+(1, 'Camisetas'),
+(2, 'Sudaderas'),
+(3, 'Gorras');
 
 -- --------------------------------------------------------
 
@@ -80,6 +117,39 @@ CREATE TABLE `categorias_descuentos_productos` (
   `id_categoria` int(11) NOT NULL,
   `id_descuento` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura Stand-in para la vista `categorias_mas_5_productos`
+-- (Véase abajo para la vista actual)
+--
+CREATE TABLE `categorias_mas_5_productos` (
+`categoria` varchar(100)
+,`cantidad_productos` bigint(21)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura Stand-in para la vista `categorias_precio_promedio_mayor_100`
+-- (Véase abajo para la vista actual)
+--
+CREATE TABLE `categorias_precio_promedio_mayor_100` (
+`categoria` varchar(100)
+,`precio_promedio` decimal(11,2)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura Stand-in para la vista `categorias_producto_mas_barato_mayor_50`
+-- (Véase abajo para la vista actual)
+--
+CREATE TABLE `categorias_producto_mas_barato_mayor_50` (
+`categoria` varchar(100)
+,`precio_minimo` decimal(10,2)
+);
 
 -- --------------------------------------------------------
 
@@ -125,7 +195,8 @@ INSERT INTO `contacto` (`id`, `nombre`, `email`, `mensaje`, `fecha_envio`) VALUE
 (1, 'Sergi', 'sergi2@gmail.com', 'ASDFFFFFFFFF', '2025-01-31 15:46:26'),
 (3, 'David', 'sergi4@gmail.com', 'gddfgdfg', '2025-02-18 14:56:07'),
 (5, 'Jordi', 'sergi4@gmail.com', 'asdasdadddddddd', '2025-02-18 14:57:26'),
-(6, 'David', 'sergi4@gmail.com', 'asd', '2025-02-18 14:58:25');
+(6, 'David', 'sergi4@gmail.com', 'asd', '2025-02-18 14:58:25'),
+(7, 'Jordi', 'sergi20031005@gmail.com', 'asd', '2025-03-04 18:17:20');
 
 -- --------------------------------------------------------
 
@@ -403,6 +474,28 @@ CREATE TABLE `pedidos_envios_logistica` (
 -- --------------------------------------------------------
 
 --
+-- Estructura Stand-in para la vista `precio_promedio_categoria`
+-- (Véase abajo para la vista actual)
+--
+CREATE TABLE `precio_promedio_categoria` (
+`categoria` varchar(100)
+,`precio_promedio` decimal(14,6)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura Stand-in para la vista `precio_promedio_por_categoria`
+-- (Véase abajo para la vista actual)
+--
+CREATE TABLE `precio_promedio_por_categoria` (
+`categoria` varchar(100)
+,`precio_promedio` decimal(11,2)
+);
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `productos`
 --
 
@@ -411,23 +504,15 @@ CREATE TABLE `productos` (
   `nombre` varchar(100) DEFAULT NULL,
   `precio` decimal(10,2) DEFAULT NULL,
   `descripcion` text DEFAULT NULL,
-  `fecha_creacion` datetime DEFAULT current_timestamp()
+  `fecha_creacion` datetime DEFAULT current_timestamp(),
+  `categoria_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `productos`
 --
 
-INSERT INTO `productos` (`id`, `nombre`, `precio`, `descripcion`, `fecha_creacion`) VALUES
-(42, 'Camiseta Corta', 35.00, 'Ligera y fresca, la Camiseta Corta es ideal para los días calurosos o para combinar con tu estilo casual. Su ajuste cómodo y tejido transpirable la hacen una opción perfecta para cualquier ocasión.', '2025-02-20 16:03:22'),
-(43, 'Camiseta Cybertruck', 47.00, 'Inspirada en el diseño futurista del Cybertruck, esta camiseta destaca por su estilo audaz y moderno. Perfecta para los fanáticos de la innovación y la tecnología, ofrece un ajuste cómodo y un look vanguardista.', '2025-02-20 16:03:45'),
-(44, 'Camiseta Minimalista', 39.00, 'Disfruta del diseño elegante y sencillo de nuestra Camiseta Minimalista. Confeccionada con algodón suave y transpirable, es perfecta para cualquier ocasión, combinando estilo y comodidad.', '2025-02-20 16:04:10'),
-(45, 'Sudadera Negra', 65.00, 'Una sudadera clásica y versátil que no puede faltar en tu armario. Hecha con tejido de alta calidad, te mantiene abrigado sin sacrificar el estilo. Ideal para combinar con cualquier outfit.', '2025-02-20 16:04:33'),
-(46, 'Camiseta Gris Tesla', 33.00, 'Inspirada en la innovación y la tecnología, esta camiseta gris Tesla es perfecta para los amantes del diseño moderno. Su tejido premium ofrece confort y durabilidad para el día a día.', '2025-02-20 16:04:54'),
-(47, 'Camiseta Negra', 45.00, 'Un básico imprescindible. La camiseta negra combina con todo y es ideal tanto para looks casuales como urbanos. Fabricada con materiales de alta calidad para máxima comodidad.', '2025-02-20 16:05:12'),
-(48, 'Gorra Gris Tesla', 24.00, 'Protege tu estilo con la Gorra Gris Tesla. Diseño moderno con ajuste perfecto para cualquier tamaño. Ideal para complementar tu outfit y destacar con un toque deportivo y sofisticado.', '2025-02-20 16:05:33'),
-(49, 'Sudadera Azul Marino', 65.00, 'Elegante y cómoda, esta sudadera azul marino te ofrece calidez y estilo en un solo producto. Perfecta para el frío y fácil de combinar con cualquier prenda de tu guardarropa.', '2025-02-20 16:05:52'),
-(50, 'Camiseta Negra Tesla Logo', 34.00, 'Demuestra tu pasión por Tesla con esta camiseta negra de diseño exclusivo. Con un logo distintivo, es la elección perfecta para quienes buscan una prenda moderna y con personalidad.', '2025-02-20 16:07:57');
+
 
 -- --------------------------------------------------------
 
@@ -483,6 +568,30 @@ CREATE TABLE `productos_proveedores` (
   `id_producto` int(11) NOT NULL,
   `id_proveedor` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura Stand-in para la vista `producto_mas_caro_por_categoria`
+-- (Véase abajo para la vista actual)
+--
+CREATE TABLE `producto_mas_caro_por_categoria` (
+`producto` varchar(100)
+,`categoria` varchar(100)
+,`precio` decimal(10,2)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura Stand-in para la vista `promedio_precio_mas_3_productos`
+-- (Véase abajo para la vista actual)
+--
+CREATE TABLE `promedio_precio_mas_3_productos` (
+`categoria` varchar(100)
+,`precio_promedio` decimal(11,2)
+,`cantidad_productos` bigint(21)
+);
 
 -- --------------------------------------------------------
 
@@ -574,6 +683,17 @@ CREATE TABLE `seguir` (
 -- --------------------------------------------------------
 
 --
+-- Estructura Stand-in para la vista `suma_precios_por_categoria`
+-- (Véase abajo para la vista actual)
+--
+CREATE TABLE `suma_precios_por_categoria` (
+`categoria` varchar(100)
+,`total_precio` decimal(32,2)
+);
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `tallas`
 --
 
@@ -644,7 +764,7 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `nombre`, `contraseña`, `email`, `telefono`, `fecha_registro`, `role`) VALUES
-(1, 'Sergi', '$2y$10$YEMEl9b.USZXaqJH4EqXqutCObAjD9jrnB/PLBxlEYHXCX40/pGZm', 'sergi2@gmail.com', '639503673', '2025-02-06 00:00:00', 1),
+(1, 'Sergi', '$2y$10$YEMEl9b.USZXaqJH4EqXqutCObAjD9jrnB/PLBxlEYHXCX40/pGZm', 'sergi22@gmail.com', '639503672', '2025-02-06 00:00:00', 1),
 (2, 'Jordi', '$2y$10$JiHg6AE83a4wVWZV34epDO/xPDXPhafdnsNA2TQ.tiZqat8BcxTC2', 'jordi2@gmail.com', '639503672', '2025-02-13 00:00:00', 0),
 (3, 'Sergi Casiano', '$2y$10$F6FwP2JSL/Bx9XkSj56pxuEnJoAPn88LkbL3g8ZOFCv7TCQrZPPBK', 'sergi4@gmail.com', '639503663', '2025-02-18 00:00:00', 1);
 
@@ -728,6 +848,105 @@ CREATE TABLE `usuarios_productos_puntos` (
   `id_producto` int(11) NOT NULL,
   `id_puntos` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura para la vista `cantidad_productos`
+--
+DROP TABLE IF EXISTS `cantidad_productos`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `cantidad_productos`  AS SELECT `categorias`.`nombre` AS `categoria`, count(0) AS `cantidad_productos` FROM (`productos` join `categorias` on(`productos`.`categoria_id` = `categorias`.`id`)) GROUP BY `productos`.`categoria_id` ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura para la vista `cantidad_productos_ordenados`
+--
+DROP TABLE IF EXISTS `cantidad_productos_ordenados`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `cantidad_productos_ordenados`  AS SELECT `c`.`nombre` AS `categoria`, count(`p`.`id`) AS `cantidad_productos` FROM (`productos` `p` join `categorias` `c`) WHERE `p`.`categoria_id` = `c`.`id` GROUP BY `c`.`nombre` ORDER BY count(`p`.`id`) DESC ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura para la vista `cantidad_productos_por_categoria`
+--
+DROP TABLE IF EXISTS `cantidad_productos_por_categoria`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `cantidad_productos_por_categoria`  AS SELECT `c`.`nombre` AS `categoria`, count(`p`.`id`) AS `cantidad_productos` FROM (`productos` `p` join `categorias` `c`) WHERE `p`.`categoria_id` = `c`.`id` GROUP BY `c`.`nombre` ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura para la vista `categorias_mas_5_productos`
+--
+DROP TABLE IF EXISTS `categorias_mas_5_productos`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `categorias_mas_5_productos`  AS SELECT `c`.`nombre` AS `categoria`, count(`p`.`id`) AS `cantidad_productos` FROM (`productos` `p` join `categorias` `c`) WHERE `p`.`categoria_id` = `c`.`id` GROUP BY `c`.`nombre` HAVING count(`p`.`id`) > 5 ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura para la vista `categorias_precio_promedio_mayor_100`
+--
+DROP TABLE IF EXISTS `categorias_precio_promedio_mayor_100`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `categorias_precio_promedio_mayor_100`  AS SELECT `c`.`nombre` AS `categoria`, round(avg(`p`.`precio`),2) AS `precio_promedio` FROM (`productos` `p` join `categorias` `c`) WHERE `p`.`categoria_id` = `c`.`id` GROUP BY `c`.`nombre` HAVING avg(`p`.`precio`) > 100 ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura para la vista `categorias_producto_mas_barato_mayor_50`
+--
+DROP TABLE IF EXISTS `categorias_producto_mas_barato_mayor_50`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `categorias_producto_mas_barato_mayor_50`  AS SELECT `c`.`nombre` AS `categoria`, min(`p`.`precio`) AS `precio_minimo` FROM (`productos` `p` join `categorias` `c`) WHERE `p`.`categoria_id` = `c`.`id` GROUP BY `c`.`nombre` HAVING min(`p`.`precio`) > 50 ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura para la vista `precio_promedio_categoria`
+--
+DROP TABLE IF EXISTS `precio_promedio_categoria`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `precio_promedio_categoria`  AS SELECT `categorias`.`nombre` AS `categoria`, avg(`productos`.`precio`) AS `precio_promedio` FROM (`productos` join `categorias` on(`productos`.`categoria_id` = `categorias`.`id`)) GROUP BY `productos`.`categoria_id` ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura para la vista `precio_promedio_por_categoria`
+--
+DROP TABLE IF EXISTS `precio_promedio_por_categoria`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `precio_promedio_por_categoria`  AS SELECT `c`.`nombre` AS `categoria`, round(avg(`p`.`precio`),2) AS `precio_promedio` FROM (`productos` `p` join `categorias` `c`) WHERE `p`.`categoria_id` = `c`.`id` GROUP BY `c`.`nombre` ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura para la vista `producto_mas_caro_por_categoria`
+--
+DROP TABLE IF EXISTS `producto_mas_caro_por_categoria`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `producto_mas_caro_por_categoria`  AS SELECT `p`.`nombre` AS `producto`, `c`.`nombre` AS `categoria`, `p`.`precio` AS `precio` FROM (`productos` `p` join `categorias` `c`) WHERE `p`.`categoria_id` = `c`.`id` AND `p`.`precio` = (select max(`productos`.`precio`) from `productos` where `productos`.`categoria_id` = `p`.`categoria_id`) ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura para la vista `promedio_precio_mas_3_productos`
+--
+DROP TABLE IF EXISTS `promedio_precio_mas_3_productos`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `promedio_precio_mas_3_productos`  AS SELECT `c`.`nombre` AS `categoria`, round(avg(`p`.`precio`),2) AS `precio_promedio`, count(`p`.`id`) AS `cantidad_productos` FROM (`productos` `p` join `categorias` `c`) WHERE `p`.`categoria_id` = `c`.`id` GROUP BY `c`.`nombre` HAVING count(`p`.`id`) > 3 ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura para la vista `suma_precios_por_categoria`
+--
+DROP TABLE IF EXISTS `suma_precios_por_categoria`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `suma_precios_por_categoria`  AS SELECT `c`.`nombre` AS `categoria`, sum(`p`.`precio`) AS `total_precio` FROM (`productos` `p` join `categorias` `c`) WHERE `p`.`categoria_id` = `c`.`id` GROUP BY `c`.`nombre` ;
 
 --
 -- Índices para tablas volcadas
@@ -924,7 +1143,8 @@ ALTER TABLE `pedidos_envios_logistica`
 -- Indices de la tabla `productos`
 --
 ALTER TABLE `productos`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `categoria_id` (`categoria_id`);
 
 --
 -- Indices de la tabla `productos_categorias`
@@ -1093,10 +1313,16 @@ ALTER TABLE `carrito_compra`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `categorias`
+--
+ALTER TABLE `categorias`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT de la tabla `contacto`
 --
 ALTER TABLE `contacto`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `detalles_pedido`
@@ -1114,13 +1340,13 @@ ALTER TABLE `pedidos`
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- AUTO_INCREMENT de la tabla `tallas`
 --
 ALTER TABLE `tallas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
@@ -1237,6 +1463,12 @@ ALTER TABLE `pedidos`
 ALTER TABLE `pedidos_envios_logistica`
   ADD CONSTRAINT `pedidos_envios_logistica_ibfk_2` FOREIGN KEY (`id_envio`) REFERENCES `envios` (`id`),
   ADD CONSTRAINT `pedidos_envios_logistica_ibfk_3` FOREIGN KEY (`id_logistica`) REFERENCES `empresa_logistica` (`id`);
+
+--
+-- Filtros para la tabla `productos`
+--
+ALTER TABLE `productos`
+  ADD CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `productos_categorias`
