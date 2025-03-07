@@ -8,8 +8,6 @@ if (isset($_GET['id'])) {
     echo "No se especificó un producto.";
     exit;
 }
-
-
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -17,9 +15,7 @@ if (isset($_GET['id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stylesphere | Detalles del Producto</title>
-    <link rel="stylesheet" href="styles.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Stylesphere | Detalles del producto</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="./images/favicon-96x96.png" sizes="96x96" />
@@ -27,52 +23,41 @@ if (isset($_GET['id'])) {
     <link rel="shortcut icon" href="./images/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png" />
     <link rel="manifest" href="./images/site.webmanifest" />
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=<?php echo time(); ?>"> <!-- Hace que los cambios en el CSS se vean reflejados al recargar la página sin necesidad de borrar caché del navegador -->
     <script src="./js/main.js" defer></script>
+    <script src="./js/filtro.js" defer></script>
 
 </head>
 
 <body class="body-container">
-    <header>
+    <header class="header">
         <div class="logo">
             <a href="./index.php">
                 <img src="./images/logo.png" alt="Logo de la tienda" width="300" height="auto">
             </a>
         </div>
         <h1 class="h1-main">STYLESPHERE</h1>
-        <nav>
+        <nav class="nav">
             <ul>
-                <li><a href="#contacto">Contacto</a></li>
-                <li><a href="./cart.php"><i class="fas fa-shopping-cart"></i></a></li>
+                <li class="nav-item"><a href="#contacto" class="nav-link">Contacto</a></li>
+                <li class="nav-item"><a href="./cart.php" class="nav-link"><i class="fas fa-shopping-cart"></i></a></li>
 
                 <?php if (isset($_SESSION['role']) && $_SESSION['role'] == 1): ?>
-                    <li><a href="admin_panel.php">Admin Panel</a></li>
+                    <li class="nav-item"><a href="admin_panel.php" class="nav-link">Admin Panel</a></li>
                 <?php endif; ?>
                 <?php if (isset($_SESSION['UsuarioID'])): ?>
-                    <li class="user-info">
-                        <?php
-                        $usuario_id = $_SESSION['UsuarioID'];
-                        $nombre = htmlspecialchars($_SESSION['Nombre']);
-                        $ruta_imagen = "images/perfiles/" . $usuario_id . ".webp";
-
-                        if (file_exists($ruta_imagen)) {
-
-                            echo "<img src='$ruta_imagen' alt='Foto de $nombre' class='profile-pic'>";
-                        } else {
-                            echo "<img src='images/perfiles/default.webp' alt='Foto por defecto' class='profile-pic' width='50' height='auto'>";
-                        }
-                        ?>
-                        <p>Hola, <?php echo $nombre; ?>!</p>
+                    <li class="nav-item user-info">
+                        <img src="images/perfiles/<?php echo $_SESSION['UsuarioID']; ?>.webp" alt="Foto de <?php echo $_SESSION['Nombre']; ?>" class="profile-pic">
+                        <p>Hola, <?php echo $_SESSION['Nombre']; ?>!</p>
                     </li>
-                    <li><a href="logout.php">Cerrar sesión</a></li>
+                    <li class="nav-item"><a href="logout.php" class="nav-link">Cerrar sesión</a></li>
                 <?php else: ?>
-                    <li><a href="./login.php"><i class="fas fa-sign-in-alt"></i></a></li>
+                    <li class="nav-item"><a href="./login.php" class="nav-link"><i class="fas fa-sign-in-alt"></i></a></li>
                 <?php endif; ?>
-
-
             </ul>
         </nav>
     </header>
+
     <main class="product-details-container">
         <?php
         $sql = "SELECT id, nombre, precio, descripcion FROM productos WHERE id = $id_producto";
@@ -96,32 +81,32 @@ if (isset($_GET['id'])) {
                     $tallas_array[] = $row_talla["tallas"];
                 }
             }
+        ?>
 
-            echo "<div class='descripcion-container'><p class='descripcion-details'>" . htmlspecialchars($descripcion) . "</p></div>";
-            echo "<div class='product-details-flex' data-product-id=$id>";
+            <div class="product-details-flex" data-product-id="<?php echo $id; ?>">
+                <div class="product-info">
+                    <h3 class="product-name"><?php echo htmlspecialchars($nombre); ?></h3>
+                    <p class="descripcion-details"><?php echo htmlspecialchars($descripcion); ?></p>
 
+                    <div class="sizes">
+                        <?php foreach ($tallas_array as $talla): ?>
+                            <div class="size-option" data-size="<?php echo htmlspecialchars($talla); ?>"><?php echo htmlspecialchars($talla); ?></div>
+                        <?php endforeach; ?>
+                    </div>
 
-            echo "<img class='img-details' src='$image_path' alt='" . htmlspecialchars($nombre) . "'>";
+                    <p class="precio-details"><?php echo number_format($precio, 2); ?> €</p>
+                    <button class="add-to-cart">Agregar al carrito</button>
+                    <div class="links-container">
+                        <a href="tabla_tallas.html" class="back-link-modificar-user">Tabla de tallas</a>
+                        <a href="index.php" class="back-link-modificar-user2">Volver</a>
+                    </div>
+                </div>
 
+                <img class="img-details" src="<?php echo $image_path; ?>" alt="<?php echo htmlspecialchars($nombre); ?>">
 
-            echo "<div class='product-info'>";
-            echo "<h3>" . htmlspecialchars($nombre) . "</h3>";
+            </div>
 
-
-            // Mostrar las tallas disponibles
-            echo "<div class='sizes'>";
-            foreach ($tallas_array as $talla) {
-                echo "<div class='size-option' data-size='" . htmlspecialchars($talla) . "'>" . htmlspecialchars($talla) . "</div>";
-            }
-            echo "</div>";
-
-            echo "<p class='precio-details'>" . number_format($precio, 2) . " €</p>";
-            echo "<button class='add-to-cart'>Agregar al carrito</button>";
-            echo "<a href='tabla_tallas.html' class='cancel-button-modificar-product'>Tabla de tallas</a>";
-
-            echo "</div>";
-
-            echo "</div>";
+        <?php
         } else {
             echo "<p class='error-message'>No se encontró el producto.</p>";
         }

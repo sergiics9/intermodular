@@ -121,7 +121,7 @@ $categoria = isset($_GET['categoria']) ? (int)$_GET['categoria'] : 0;
 
             </section>
 
-            <section class="products">
+            <section class="header-products">
                 <h2 class="h2-main">Lista de Productos</h2>
                 <nav class="categorias-nav">
                     <a href="index.php" class="<?php echo empty($categoria) ? 'active' : ''; ?>">Todas</a>
@@ -129,6 +129,8 @@ $categoria = isset($_GET['categoria']) ? (int)$_GET['categoria'] : 0;
                     <a href="index.php?categoria=2" class="<?php echo ($categoria == 2) ? 'active' : ''; ?>">Sudaderas</a>
                     <a href="index.php?categoria=3" class="<?php echo ($categoria == 3) ? 'active' : ''; ?>">Gorras</a>
                 </nav>
+            </section>
+
 
         </div>
         <div class="container">
