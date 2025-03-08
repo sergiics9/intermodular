@@ -7,7 +7,7 @@ if (isset($_GET['busqueda'])) {
     $busqueda = $conn->real_escape_string($_GET['busqueda']);
 }
 $min = isset($_GET['min']) ? (int)$_GET['min'] : 0;
-$max = isset($_GET['max']) ? (int)$_GET['max'] : 250; // Ajusta según tu rango de precios
+$max = isset($_GET['max']) ? (int)$_GET['max'] : 250;
 $orden = isset($_GET['orden']) ? $_GET['orden'] : "";
 $categoria = isset($_GET['categoria']) ? (int)$_GET['categoria'] : 0;
 
@@ -106,7 +106,6 @@ $categoria = isset($_GET['categoria']) ? (int)$_GET['categoria'] : 0;
                         <span id="maxValor"><?php echo $max; ?> €</span>
                     </div>
 
-                    <!-- Filtro de orden -->
                     <label for="orden">Ordenar por</label>
                     <select class="select-filtro" name="orden" id="orden">
                         <option value="">Nuestra Selección</option>

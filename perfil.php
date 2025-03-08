@@ -13,17 +13,19 @@ $nombre = htmlspecialchars($_SESSION['Nombre']);
 $ruta_imagen = "images/perfiles/" . $usuario_id . ".webp";
 $mensaje = "";
 
-// Obtener email y teléfono actuales
-$stmt = $conn->prepare("SELECT email, telefono FROM Usuarios WHERE id = ?");
+// Obtener email, teléfono y contraseña actuales
+$stmt = $conn->prepare("SELECT email, telefono, contraseña FROM Usuarios WHERE id = ?");
 $stmt->bind_param("i", $usuario_id);
 $stmt->execute();
 $result = $stmt->get_result();
 $usuario = $result->fetch_assoc();
 $email_actual = $usuario['email'];
 $telefono_actual = $usuario['telefono'];
+$contrasena_actual = $usuario['contraseña'];
 
-// Procesar actualización de la foto de perfil
+// Procesar actualización de la foto de perfil, datos y contraseña
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Cambiar foto de perfil
     if (isset($_FILES['foto_perfil']) && !empty($_FILES['foto_perfil']['name'])) {
         $directorio = "images/perfiles/";
         if (!file_exists($directorio)) {
@@ -34,14 +36,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($tipo_imagen == "image/jpeg" || $tipo_imagen == "image/png" || $tipo_imagen == "image/webp") {
             $foto_perfil = $directorio . $usuario_id . ".webp";
             move_uploaded_file($_FILES['foto_perfil']['tmp_name'], $foto_perfil);
-            header("Location: perfil.php");
-            exit();
         } else {
             $mensaje = "⚠️ Formato de imagen no permitido. Usa JPG, PNG o WEBP.";
         }
     }
 
-    // Procesar actualización de email y teléfono
+    // Cambiar datos (email y teléfono)
     if (isset($_POST['email']) && isset($_POST['telefono'])) {
         $nuevo_email = trim($_POST['email']);
         $nuevo_telefono = trim($_POST['telefono']);
@@ -74,6 +74,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
     }
+
+    // Cambiar contraseña (solo si los campos de contraseña están completos)
+    if (
+        isset($_POST['contrasena_antigua']) && isset($_POST['contrasena_nueva']) && isset($_POST['contrasena_nueva_confirmacion']) &&
+        !empty($_POST['contrasena_antigua']) && !empty($_POST['contrasena_nueva']) && !empty($_POST['contrasena_nueva_confirmacion'])
+    ) {
+        $contrasena_antigua = $_POST['contrasena_antigua'];
+        $contrasena_nueva = $_POST['contrasena_nueva'];
+        $contrasena_nueva_confirmacion = $_POST['contrasena_nueva_confirmacion'];
+
+        // Verificar que la contraseña antigua es correcta
+        if (!password_verify($contrasena_antigua, $contrasena_actual)) {
+            $mensaje = "⚠️ La contraseña antigua no es correcta.";
+        } elseif ($contrasena_nueva != $contrasena_nueva_confirmacion) {
+            $mensaje = "⚠️ Las contraseñas nuevas no coinciden.";
+        } else {
+            // Encriptar la nueva contraseña
+            $contrasena_encriptada = password_hash($contrasena_nueva, PASSWORD_DEFAULT);
+
+            // Actualizar la contraseña
+            $stmt = $conn->prepare("UPDATE Usuarios SET contraseña = ? WHERE id = ?");
+            $stmt->bind_param("si", $contrasena_encriptada, $usuario_id);
+
+            if ($stmt->execute()) {
+                $mensaje = "✅ Contraseña actualizada correctamente.";
+            } else {
+                $mensaje = "⚠️ Error al actualizar la contraseña.";
+            }
+        }
+    }
 }
 ?>
 
@@ -99,26 +129,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <h2>Perfil de <?php echo $nombre; ?></h2>
 
         <div class="profile-card">
-            <img src="<?php echo file_exists($ruta_imagen) ? $ruta_imagen : 'images/perfiles/default.webp'; ?>"
-                alt="Foto de perfil" class="profile-pic-perfil">
+            <img src="<?php echo file_exists($ruta_imagen) ? $ruta_imagen : 'images/perfiles/default.webp'; ?>" alt="Foto de perfil" class="profile-pic-perfil">
 
             <form action="perfil.php" method="POST" enctype="multipart/form-data">
                 <label for="foto_perfil" class="file-label">Cambiar foto de perfil</label>
                 <input type="file" id="foto_perfil" name="foto_perfil" accept="image/*">
-                <button type="submit" class="btn">Actualizar Foto</button>
-            </form>
 
-            <h3>Actualizar información</h3>
-            <form action="perfil.php" method="POST">
                 <label for="email">Correo electrónico:</label>
                 <input type="email" id="email" name="email" class="input-field" value="<?php echo htmlspecialchars($email_actual); ?>" required>
 
                 <label for="telefono">Teléfono:</label>
                 <input type="text" id="telefono" name="telefono" class="input-field" value="<?php echo htmlspecialchars($telefono_actual); ?>" required>
 
+                <label for="contrasena_antigua">Contraseña antigua:</label>
+                <input type="password" id="contrasena_antigua" name="contrasena_antigua" class="input-field">
+
+                <label for="contrasena_nueva">Nueva contraseña:</label>
+                <input type="password" id="contrasena_nueva" name="contrasena_nueva" class="input-field">
+
+                <label for="contrasena_nueva_confirmacion">Confirmar nueva contraseña:</label>
+                <input type="password" id="contrasena_nueva_confirmacion" name="contrasena_nueva_confirmacion" class="input-field">
+
                 <button type="submit" class="btn">Actualizar Datos</button>
             </form>
-
 
             <?php if ($mensaje): ?>
                 <p class="mensaje"><?php echo $mensaje; ?></p>
