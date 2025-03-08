@@ -1,4 +1,9 @@
-
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 07-03-2025 a las 23:17:21
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -512,7 +517,16 @@ CREATE TABLE `productos` (
 -- Volcado de datos para la tabla `productos`
 --
 
-
+INSERT INTO `productos` (`id`, `nombre`, `precio`, `descripcion`, `fecha_creacion`, `categoria_id`) VALUES
+(42, 'Camiseta Corta', 35.00, 'Ligera y fresca, la Camiseta Corta es ideal para los días calurosos o para combinar con tu estilo casual. Su ajuste cómodo y tejido transpirable la hacen una opción perfecta para cualquier ocasión.', '2025-02-20 16:03:22', 1),
+(43, 'Camiseta Cybertruck', 47.00, 'Inspirada en el diseño futurista del Cybertruck, esta camiseta destaca por su estilo audaz y moderno. Perfecta para los fanáticos de la innovación y la tecnología, ofrece un ajuste cómodo y un look vanguardista.', '2025-02-20 16:03:45', 1),
+(44, 'Camiseta Minimalista', 39.00, 'Disfruta del diseño elegante y sencillo de nuestra Camiseta Minimalista. Confeccionada con algodón suave y transpirable, es perfecta para cualquier ocasión, combinando estilo y comodidad.', '2025-02-20 16:04:10', 1),
+(45, 'Sudadera Negra', 65.00, 'Una sudadera clásica y versátil que no puede faltar en tu armario. Hecha con tejido de alta calidad, te mantiene abrigado sin sacrificar el estilo. Ideal para combinar con cualquier outfit.', '2025-02-20 16:04:33', 2),
+(46, 'Camiseta Gris Tesla', 33.00, 'Inspirada en la innovación y la tecnología, esta camiseta gris Tesla es perfecta para los amantes del diseño moderno. Su tejido premium ofrece confort y durabilidad para el día a día.', '2025-02-20 16:04:54', 1),
+(47, 'Camiseta Negra', 45.00, 'Un básico imprescindible. La camiseta negra combina con todo y es ideal tanto para looks casuales como urbanos. Fabricada con materiales de alta calidad para máxima comodidad.', '2025-02-20 16:05:12', 1),
+(48, 'Gorra Gris Tesla', 24.00, 'Protege tu estilo con la Gorra Gris Tesla. Diseño moderno con ajuste perfecto para cualquier tamaño. Ideal para complementar tu outfit y destacar con un toque deportivo y sofisticado.', '2025-02-20 16:05:33', 3),
+(49, 'Sudadera Azul Marino', 65.00, 'Elegante y cómoda, esta sudadera azul marino te ofrece calidez y estilo en un solo producto. Perfecta para el frío y fácil de combinar con cualquier prenda de tu guardarropa.', '2025-02-20 16:05:52', 2),
+(50, 'Camiseta Negra Tesla Logo', 34.00, 'Demuestra tu pasión por Tesla con esta camiseta negra de diseño exclusivo. Con un logo distintivo, es la elección perfecta para quienes buscan una prenda moderna y con personalidad.', '2025-02-20 16:07:57', 1);
 
 -- --------------------------------------------------------
 

@@ -4,6 +4,61 @@ html {
 }
 
 body {
+  font-family: "Montserrat", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f5f5f5;
+}
+
+.product-details-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 50px 20px;
+  background-color: #f5f5f5;
+}
+
+.product-info {
+  margin-right: 20px;
+  max-width: 60%; /* Controlar el tamaño de la parte de la información */
+}
+
+.product-name {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.descripcion-details {
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+.sizes {
+  margin: 10px 0;
+}
+
+.precio-details {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.img-details {
+  max-width: 400px;
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px; /* Espacio debajo de la imagen */
+}
+
+.error-message {
+  color: red;
+  font-size: 1.2rem;
+  text-align: center;
+  margin-top: 50px;
+}
+
+body {
   font-family: "Montserrat", serif;
   margin: 0;
   padding: 0;
@@ -77,13 +132,6 @@ h2 {
   box-sizing: border-box;
 }
 
-.descripcion-details {
-  margin: 0;
-  font-size: 16px;
-  line-height: 1.4;
-  word-wrap: break-word;
-}
-
 .busqueda {
   display: flex;
   align-items: center;
@@ -148,6 +196,25 @@ h2 {
   width: 100%;
 }
 
+.back-link-modificar-user2 {
+  background-color: #ccc;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  cursor: not-allowed;
+  border-radius: 5px;
+  margin-top: 10px;
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #3b5fd4;
+  color: #fff;
+  text-decoration: none;
+  margin-top: 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
 .add-to-cart {
   background-color: #ccc;
   color: #fff;
@@ -204,8 +271,24 @@ h2 {
   margin-left: 40px;
 }
 
-.products h2 {
-  font-size: 2.5em;
+.header-products {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin: 0 auto; /* Esto forzará el centrado dentro del flex padre */
+  width: 100%; /* Asegura que ocupa el espacio disponible */
+  margin-left: 28%;
+}
+
+.categorias-nav {
+  display: flex;
+  gap: 20px;
+}
+
+.header-products h2 {
+  font-size: 2em;
   margin-bottom: 20px;
 }
 
@@ -221,10 +304,6 @@ h2 {
 .size-option:hover {
   background-color: #f0f0f0;
   border-radius: 25%;
-}
-
-.precio-details {
-  margin-left: 25%;
 }
 
 .size-option.selected {
@@ -401,17 +480,11 @@ h2 {
   background: #f8f8f8;
   border-radius: 8px;
   box-shadow: 0 0 10px #0000001a;
-  margin-inline: 20%;
-  margin-block: 6%;
+  margin-inline: 10%;
   justify-content: space-between;
   padding: 100px;
   display: flex;
   align-items: center;
-}
-
-.img-details {
-  width: 40%;
-  height: auto;
 }
 
 .profile-pic {
@@ -588,13 +661,6 @@ h2 {
   margin-top: 20px;
 }
 
-.error-message-products {
-  color: red;
-  text-align: center;
-  font-size: 16px;
-  margin-top: 20px;
-}
-
 .input-modificar-user,
 .select-modificar-user {
   width: 90%;
@@ -618,13 +684,13 @@ h2 {
   color: green;
 }
 
-.error-message {
-  color: red;
+.links-container {
+  margin-top: 20px;
+  gap: 15px;
 }
 
 .back-link,
 .back-link-modificar-user {
-  display: inline-block;
   margin-top: 10px;
   color: #007bff;
 }
@@ -870,7 +936,7 @@ h1.h1-main {
   display: flex;
   flex-direction: row-reverse;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center; /* Esto centra los elementos dentro */
   gap: 11%;
 }
 
@@ -949,13 +1015,6 @@ input[type="range"]::-webkit-slider-thumb {
   font-size: 14px;
   color: #333;
   margin-top: 5px;
-}
-
-.categorias-nav {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-bottom: 20px;
 }
 
 .categorias-nav a {
