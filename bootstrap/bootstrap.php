@@ -7,11 +7,13 @@ require_once __DIR__ . '/../app/Core/DB.php';
 require_once __DIR__ . '/../app/Core/Model.php';
 require_once __DIR__ . '/../app/Core/QueryBuilder.php';
 
-require_once __DIR__ . '/../app/Models/Articulo.php';
-require_once __DIR__ . '/../app/Models/Generico.php';
-require_once __DIR__ . '/../app/Models/Zapatilla.php';
-require_once __DIR__ . '/../app/Models/Balon.php';
-require_once __DIR__ . '/../app/Models/Talla.php';
-require_once __DIR__ . '/../app/Models/Color.php';
-require_once __DIR__ . '/../app/Models/BalonColor.php';
-require_once __DIR__ . '/../app/Models/ZapatillaTallaColor.php';
+require_once __DIR__ . '/../app/Core/Auth.php';
+require_once __DIR__ . '/../app/Http/Middlewares/Middleware.php';
+
+require_once __DIR__ . '/../app/Core/Session.php';
+require_once __DIR__ . '/../app/Core/Request.php';
+require_once __DIR__ . '/../app/Core/Response.php';
+require_once __DIR__ . '/../app/Core/ErrorHandler.php';
+require_once __DIR__ . '/../app/Core/helpers.php';
+
+require_once __DIR__ . '/../app/Models/Usuario.php';

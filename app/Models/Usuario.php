@@ -4,38 +4,41 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Core\DB;
 use App\Core\Model;
+use App\Core\DB;
+use App\Core\QueryBuilder;
 
 class Usuario extends Model
 {
     protected static string $table = 'usuarios';
-    protected static array $fillable = ['nombre', 'email', 'role'];
+    protected static array $fillable = ['nombre', 'contraseña', 'email', 'telefono', 'role'];
+    protected static array $relations = ['pedidos'];
 
-    /** @override */
     public function insert(): void
     {
-        $table = self::$table;
-        $sql = "INSERT INTO $table (nombre, email, role) VALUES (?, ?, ?)";
-        $params = [(string) $this->nombre, (string) $this->email, (int) $this->role];
-        DB::insert($sql, $params);
+        $sql = "INSERT INTO " . self::$table
+            . " (nombre, contraseña, email, telefono, role)"
+            . " VALUES (?, ?, ?, ?, ?)";
+        $params = [$this->nombre, $this->contraseña, $this->email, $this->telefono, $this->role];
+        $this->id = DB::insert($sql, $params);
     }
 
-    /** @override */
     public function update(): void
     {
-        $table = self::$table;
-        $sql = "UPDATE $table SET nombre = ?, email = ?, role = ? WHERE id = ?";
-        $params = [(string) $this->nombre, (string) $this->email, (int) $this->role, (int) $this->id];
+        $sql = "UPDATE " . self::$table
+            . " SET nombre = ?, contraseña = ?, email = ?, telefono = ?, role = ?"
+            . " WHERE id = ?";
+        $params = [$this->nombre, $this->contraseña, $this->email, $this->telefono, $this->role, $this->id];
         DB::update($sql, $params);
     }
 
-    // Método de autenticación
-    public static function authenticate(string $email, string $password): ?self
+    public function pedidos(): QueryBuilder
     {
-        $sql = "SELECT * FROM " . self::$table . " WHERE email = ? AND password = ?";
-        $params = [(string) $email, (string) $password];
-        $result = DB::select(self::class, $sql, $params);
-        return !empty($result) ? new self($result[0]) : null;
+        return Pedido::where('UsuarioID', $this->id);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role == 1;
     }
 }

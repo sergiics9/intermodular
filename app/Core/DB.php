@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Core;
 
-require_once __DIR__ . '/../../config/db.php';
-
 class DB
 {
     private static ?\PDO $connection = null;
@@ -91,7 +89,11 @@ class DB
 
     private static function prepare(string $sql, array $params = []): \PDOStatement
     {
-        error_log("SQL: $sql");
+        if (DEBUG) {
+            $message = "<p style='color: red;'>\$sql = $sql<br>\$params = " . print_r($params, true) . "</p>";
+            error_log(strip_tags($message));
+            echo $message;
+        }
 
         $db = self::connection();
         $stmt = $db->prepare($sql);

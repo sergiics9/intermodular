@@ -2,4 +2,4 @@
 
 namespace App\Exceptions;
 
-class ModelNotFoundException extends \Exception{}
+class ModelNotFoundException extends \Exception {}

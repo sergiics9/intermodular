@@ -4,40 +4,35 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Core\DB;
 use App\Core\Model;
+use App\Core\DB;
 
 class Talla extends Model
 {
     protected static string $table = 'tallas';
-    protected static array $fillable = ['tallas', 'id_producto'];
+    protected static array $fillable = ['id_producto', 'tallas'];
+    protected static array $relations = ['producto'];
 
-    /** @override */
     public function insert(): void
     {
-        $sql = "INSERT INTO " . self::$table . " (tallas, id_producto) VALUES (?, ?)";
-        $params = [
-            (string) $this->tallas,
-            (int) $this->id_producto
-        ];
-        DB::insert($sql, $params);
+        $sql = "INSERT INTO " . self::$table
+            . " (id_producto, tallas)"
+            . " VALUES (?, ?)";
+        $params = [$this->id_producto, $this->tallas];
+        $this->id = DB::insert($sql, $params);
     }
 
-    /** @override */
     public function update(): void
     {
-        $sql = "UPDATE " . self::$table . " SET tallas = ? WHERE id_producto = ?";
-        $params = [
-            (string) $this->tallas,
-            (int) $this->id_producto
-        ];
+        $sql = "UPDATE " . self::$table
+            . " SET id_producto = ?, tallas = ?"
+            . " WHERE id = ?";
+        $params = [$this->id_producto, $this->tallas, $this->id];
         DB::update($sql, $params);
     }
 
-    public static function findByProductId(int $id_producto): array
+    public function producto(): ?Producto
     {
-        $sql = "SELECT tallas FROM " . self::$table . " WHERE id_producto = ?";
-        $params = [(int) $id_producto];
-        return DB::select(self::class, $sql, $params);
+        return Producto::find($this->id_producto);
     }
 }

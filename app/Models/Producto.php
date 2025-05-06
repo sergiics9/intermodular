@@ -4,86 +4,61 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Core\DB;
 use App\Core\Model;
+use App\Core\DB;
+use App\Core\QueryBuilder;
 
 class Producto extends Model
 {
     protected static string $table = 'productos';
-    protected static array $fillable = ['nombre', 'precio', 'descripcion', 'categoria_id', 'fecha_creacion'];
+    protected static array $fillable = ['nombre', 'precio', 'descripcion', 'categoria_id'];
+    protected static array $relations = ['categoria', 'tallas', 'detallesPedido'];
 
-    /** @override */
     public function insert(): void
     {
-        $table = self::$table;
-        $sql = "INSERT INTO $table (nombre, precio, descripcion, categoria_id, fecha_creacion) VALUES (?, ?, ?, ?, ?)";
-        $params = [
-            (string) $this->nombre,
-            (float) $this->precio,
-            (string) $this->descripcion,
-            (int) $this->categoria_id,
-            (string) $this->fecha_creacion
-        ];
-        DB::insert($sql, $params);
+        $sql = "INSERT INTO " . self::$table
+            . " (nombre, precio, descripcion, categoria_id)"
+            . " VALUES (?, ?, ?, ?)";
+        $params = [$this->nombre, $this->precio, $this->descripcion, $this->categoria_id];
+        $this->id = DB::insert($sql, $params);
     }
 
-    /** @override */
     public function update(): void
     {
-        $table = self::$table;
-        $sql = "UPDATE $table SET nombre = ?, precio = ?, descripcion = ?, categoria_id = ?, fecha_creacion = ? WHERE id = ?";
-        $params = [
-            (string) $this->nombre,
-            (float) $this->precio,
-            (string) $this->descripcion,
-            (int) $this->categoria_id,
-            (string) $this->fecha_creacion,
-            (int) $this->id
-        ];
+        $sql = "UPDATE " . self::$table
+            . " SET nombre = ?, precio = ?, descripcion = ?, categoria_id = ?"
+            . " WHERE id = ?";
+        $params = [$this->nombre, $this->precio, $this->descripcion, $this->categoria_id, $this->id];
         DB::update($sql, $params);
     }
 
-    // Método para filtrar productos por precio
-    public static function getProductosFiltrados(int $min, int $max, string $busqueda = '', int $categoria = 0, string $orden = ''): array
+    public function categoria(): ?Categoria
     {
-        $sql = "SELECT * FROM " . self::$table . " WHERE precio BETWEEN ? AND ?";
-        $params = [(int) $min, (int) $max];
-
-        if (!empty($busqueda)) {
-            $sql .= " AND nombre LIKE ?";
-            $params[] = '%' . (string)$busqueda . '%';
+        if ($this->categoria_id === null) {
+            return null;
         }
-
-        if ($categoria > 0) {
-            $sql .= " AND categoria_id = ?";
-            $params[] = (int) $categoria;
-        }
-
-        switch ($orden) {
-            case 'nombre_asc':
-                $sql .= " ORDER BY nombre ASC";
-                break;
-            case 'nombre_desc':
-                $sql .= " ORDER BY nombre DESC";
-                break;
-            case 'precio_asc':
-                $sql .= " ORDER BY precio ASC";
-                break;
-            case 'precio_desc':
-                $sql .= " ORDER BY precio DESC";
-                break;
-            case 'novedades':
-                $sql .= " ORDER BY fecha_creacion DESC";
-                break;
-        }
-
-        return DB::select(self::class, $sql, $params);
+        return Categoria::find($this->categoria_id);
     }
 
-    // Relación con las tallas
-    public function tallas(): array
+    public function tallas(): QueryBuilder
     {
-        $sql = "SELECT tallas FROM tallas WHERE id_producto = ?";
-        return DB::select(self::class, $sql, [(int)$this->id]);
+        return Talla::where('id_producto', $this->id);
+    }
+
+    public function detallesPedido(): QueryBuilder
+    {
+        return DetallePedido::where('ProductoID', $this->id);
+    }
+
+    public function tallasDisponibles(): array
+    {
+        $tallas = $this->tallas()->get();
+        $resultado = [];
+
+        foreach ($tallas as $talla) {
+            $resultado[] = $talla->tallas;
+        }
+
+        return $resultado;
     }
 }

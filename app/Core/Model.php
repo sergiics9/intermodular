@@ -1,7 +1,9 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Core;
+
 use App\Exceptions\ModelNotFoundException;
 
 abstract class Model
@@ -11,7 +13,7 @@ abstract class Model
     protected static array $aggregates;
     protected static array $pivots;
     protected static array $relations;
-    
+
     protected ?int $id = null;
 
     public function __get($propiedad)
@@ -43,25 +45,28 @@ abstract class Model
             in_array($propiedad, static::$pivots ?? [])
         ) {
             $this->$propiedad = $valor;
-
         } else {
             throw new \RuntimeException("La propiedad '$propiedad' no está permitida en el modelo.");
         }
     }
 
-    public static function getTable(){
+    public static function getTable()
+    {
         return static::$table ?? "";
     }
 
-    public static function getFillable(){
+    public static function getFillable()
+    {
         return static::$fillable ?? [];
     }
 
-    public static function getAggregates(){
+    public static function getAggregates()
+    {
         return static::$aggregates ?? [];
     }
 
-    public static function getPivots(){
+    public static function getPivots()
+    {
         return static::$pivots ?? [];
     }
 

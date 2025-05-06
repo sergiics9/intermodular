@@ -4,36 +4,36 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Core\DB;
 use App\Core\Model;
+use App\Core\DB;
+use App\Core\QueryBuilder;
 
 class Categoria extends Model
 {
     protected static string $table = 'categorias';
     protected static array $fillable = ['nombre'];
+    protected static array $relations = ['productos'];
 
-    /** @override */
     public function insert(): void
     {
-        $table = self::$table;
-        $sql = "INSERT INTO $table (nombre) VALUES (?)";
-        $params = [(string) $this->nombre];
-        DB::insert($sql, $params);
+        $sql = "INSERT INTO " . self::$table
+            . " (nombre)"
+            . " VALUES (?)";
+        $params = [$this->nombre];
+        $this->id = DB::insert($sql, $params);
     }
 
-    /** @override */
     public function update(): void
     {
-        $table = self::$table;
-        $sql = "UPDATE $table SET nombre = ? WHERE id = ?";
-        $params = [(string) $this->nombre, (int) $this->id];
+        $sql = "UPDATE " . self::$table
+            . " SET nombre = ?"
+            . " WHERE id = ?";
+        $params = [$this->nombre, $this->id];
         DB::update($sql, $params);
     }
 
-    // Obtener todas las categorías
-    public static function getAll(): array
+    public function productos(): QueryBuilder
     {
-        $sql = "SELECT * FROM " . self::$table;
-        return DB::select(self::class, $sql);
+        return Producto::where('categoria_id', $this->id);
     }
 }

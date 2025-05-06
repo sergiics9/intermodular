@@ -1,9 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Core;
 
-class QueryBuilder {
+class QueryBuilder
+{
 
     private string $modelName;
     private string $table;
@@ -17,7 +19,8 @@ class QueryBuilder {
 
     private bool $namedPlaceholders = true;
 
-    public function __construct(string $modelName, ?string $sql = null, array $params = []) {
+    public function __construct(string $modelName, ?string $sql = null, array $params = [])
+    {
         $this->modelName = $modelName;
         $this->table = $modelName::getTable();
         $this->sql = $sql;
@@ -27,18 +30,19 @@ class QueryBuilder {
         $this->namedPlaceholders = empty($params) || !array_is_list($params);
     }
 
-    public function where(string $column, string $operator = "=", mixed $value = null): self {
+    public function where(string $column, string $operator = "=", mixed $value = null): self
+    {
         if (func_num_args() === 2) {
             $value = $operator;
             $operator = "=";
         }
 
-        $prefix = ($this->whereClause || str_contains(strtoupper($this->sql), "WHERE")) ? " AND" : " WHERE";
+        $prefix = ($this->whereClause || str_contains(strtoupper($this->sql ?? ''), "WHERE")) ? " AND" : " WHERE";
 
         if ($value === null) {
             $operator = $operator === "=" ? "IS" : "IS NOT";
             $this->whereClause .= "$prefix $column $operator NULL";
-        } else if($this->namedPlaceholders){
+        } else if ($this->namedPlaceholders) {
             $this->whereClause .= "$prefix $column $operator :$column";
             $this->params[":$column"] = $value;
         } else {
@@ -49,9 +53,10 @@ class QueryBuilder {
         return $this;
     }
 
-    public function orderBy(string $column, string $direction = "ASC"): self {
+    public function orderBy(string $column, string $direction = "ASC"): self
+    {
         $allowedDirections = ["ASC", "DESC"];
-        if(!in_array(strtoupper($direction), $allowedDirections)) {
+        if (!in_array(strtoupper($direction), $allowedDirections)) {
             throw new \InvalidArgumentException("La ordenación sólo puede ser ascendente (ASC) o descendente (DESC)");
         }
 
@@ -59,31 +64,33 @@ class QueryBuilder {
         return $this;
     }
 
-    public function limit(int $limit): self {
+    public function limit(int $limit): self
+    {
         $this->limit = $limit;
         return $this;
     }
-    
-    public function offset(int $offset): self {
+
+    public function offset(int $offset): self
+    {
         $this->offset = $offset;
         return $this;
     }
 
     private function build(): void
     {
-        if(!$this->sql)
+        if (!$this->sql)
             $this->sql = "SELECT * FROM {$this->table}";
 
         if ($this->whereClause) {
             $this->sql .= $this->whereClause;
         }
-            
+
         if ($this->orderByClause) {
             $this->sql .= $this->orderByClause;
         }
-            
+
         if ($this->limit > 0) {
-            if($this->namedPlaceholders){
+            if ($this->namedPlaceholders) {
                 $this->sql .= " LIMIT :limit";
                 $this->params[':limit'] = $this->limit;
             } else {
@@ -91,9 +98,9 @@ class QueryBuilder {
                 $this->params[] = $this->limit;
             }
         }
-        
+
         if ($this->offset > 0) {
-            if($this->namedPlaceholders){
+            if ($this->namedPlaceholders) {
                 $this->sql .= " OFFSET :offset";
                 $this->params[':offset'] = $this->offset;
             } else {
@@ -101,30 +108,31 @@ class QueryBuilder {
                 $this->params[] = $this->offset;
             }
         }
-
-        //echo $this->sql;
-        //print_r($this->params);
     }
 
-    public function get(): array {
+    public function get(): array
+    {
         $this->build();
         return DB::select($this->modelName, $this->sql, $this->params);
     }
 
-    public function first() {
+    public function first()
+    {
         $this->limit = 1;
         $this->build();
         return DB::selectOne($this->modelName, $this->sql, $this->params);
     }
 
-    public function paginate(int $itemsPerPage, int $page): array {
+    public function paginate(int $itemsPerPage, int $page): array
+    {
         $this->limit = $itemsPerPage;
         $this->offset = ($page - 1) * $itemsPerPage;
         $this->build();
         return DB::select($this->modelName, $this->sql, $this->params);
     }
 
-    public function count(): int {
+    public function count(): int
+    {
         $this->sql = "SELECT COUNT(*) AS total FROM " . $this->table;
         $this->build();
         return DB::selectAssoc($this->sql, $this->params)[0]['total'];
