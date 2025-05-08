@@ -16,6 +16,7 @@ class RegisterValidator
         // Obtener datos
         $nombre = $request->nombre ?? '';
         $email = $request->email ?? '';
+        $telefono = $request->telefono ?? '';
         $password = $request->password ?? '';
         $password_confirm = $request->password_confirm ?? '';
         $terms = $request->terms ?? false;  // Verificar si el checkbox está marcado
@@ -32,6 +33,13 @@ class RegisterValidator
 
         if (Usuario::where('email', $email)->first()) {
             $errors['email'] = 'Este correo ya está registrado.';
+        }
+
+        // Validación de teléfono
+        if (trim($telefono) === '') {
+            $errors['telefono'] = 'El número de teléfono es obligatorio.';
+        } elseif (!preg_match('/^[0-9]{9}$/', $telefono)) {
+            $errors['telefono'] = 'El número de teléfono debe tener 9 dígitos.';
         }
 
         // Validaciones de contraseña
@@ -59,6 +67,7 @@ class RegisterValidator
             back()->withErrors($errors)->withInput([
                 'nombre' => $request->nombre,
                 'email' => $request->email,
+                'telefono' => $request->telefono,
                 'terms' => $request->terms
             ])->send();
         }

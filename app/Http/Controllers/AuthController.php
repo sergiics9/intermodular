@@ -8,8 +8,6 @@ use App\Models\Usuario;
 
 class AuthController
 {
-
-
     public function showLoginForm(): void
     {
         view('auth.login');
@@ -23,7 +21,8 @@ class AuthController
         ];
 
         if (Auth::attempt($credentials)) {
-            redirect('/peliculas/index.php')->send();
+            $nombre = Auth::user()['nombre'];
+            redirect('/productos/index.php')->with('success', "Bienvenido, $nombre")->send();
         }
 
         back()->with('error', 'Credenciales incorrectas')->send();
@@ -39,18 +38,20 @@ class AuthController
         $u = new Usuario();
         $u->nombre = trim($request->nombre);
         $u->email = trim($request->email);
-        $u->password = password_hash($request->password, PASSWORD_DEFAULT);
-        $u->role = 'user';
+        $u->telefono = trim($request->telefono);
+        $u->contraseña = password_hash($request->password, PASSWORD_DEFAULT);
+        $u->role = 0; // Usuario regular por defecto
         $u->save();
 
         session()->set('user', [
             'id' => $u->id,
             'nombre' => $u->nombre,
             'email' => $u->email,
+            'telefono' => $u->telefono,
             'role' => $u->role,
         ]);
 
-        redirect('/peliculas/index.php')->with('success', "¡Bienvenido, $u->nombre!")->send();
+        redirect('/productos/index.php')->with('success', "¡Bienvenido, $u->nombre!")->send();
     }
 
     public function logout()

@@ -25,7 +25,7 @@ class PedidoController
         view('pedidos.index', compact('pedidos'));
     }
 
-    public function show(string $id)
+    public function show(int $id)
     {
         $pedido = Pedido::findOrFail($id);
 

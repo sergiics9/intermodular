@@ -8,18 +8,18 @@ use App\Models\Usuario;
 
 class Auth
 {
-
     public static function attempt(array $credentials): bool
     {
         $email = $credentials['email'] ?? '';
         $password = $credentials['password'] ?? '';
         $u = Usuario::where('email', $email)->first();
 
-        if ($u && password_verify($password, $u->password)) {
+        if ($u && password_verify($password, $u->contraseña)) {
             session()->set('user', [
                 'id' => $u->id,
                 'nombre' => $u->nombre,
                 'email' => $u->email,
+                'telefono' => $u->telefono,
                 'role' => $u->role,
             ]);
             return true;
@@ -43,10 +43,10 @@ class Auth
         return $user ? $user['id'] : null; // Verificar si no es null
     }
 
-    public static function role(): ?string
+    public static function role(): ?int
     {
         $user = self::user(); // Obtener el usuario una vez
-        return $user ? $user['role'] : null; // Verificar si no es null
+        return $user ? (int)$user['role'] : null; // Convertir a int y verificar si no es null
     }
 
     public static function logout(): void

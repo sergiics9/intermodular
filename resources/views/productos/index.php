@@ -1,6 +1,8 @@
 <?php
 
-use App\Core\Auth; ?>
+use App\Core\Auth;
+
+include __DIR__ . '/../partials/messages.php' ?>
 
 
 <div class="container mt-5">
