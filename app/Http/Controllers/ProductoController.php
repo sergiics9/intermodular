@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 require_once __DIR__ . '/../../Models/Producto.php';
-
+require_once __DIR__ . '/../../Models/Talla.php';
+require_once __DIR__ . '/../../Models/Categoria.php';
 
 use App\Core\Request;
 use App\Models\Producto;
 use App\Models\Categoria;
 use App\Models\Talla;
+use App\Core\DB;
 
 class ProductoController
 {
@@ -23,7 +25,22 @@ class ProductoController
     public function show(int $id)
     {
         $producto = Producto::findOrFail($id);
-        view('productos.show', compact('producto'));
+
+        // Obtener tallas directamente de la base de datos
+        $sql = "SELECT * FROM tallas WHERE id_producto = ?";
+        $tallas = DB::selectAssoc($sql, [$producto->id]);
+
+        // Obtener categoría directamente de la base de datos si existe
+        $categoria = null;
+        if ($producto->categoria_id) {
+            $sql = "SELECT * FROM categorias WHERE id = ?";
+            $categorias = DB::selectAssoc($sql, [$producto->categoria_id]);
+            if (!empty($categorias)) {
+                $categoria = (object) $categorias[0];
+            }
+        }
+
+        view('productos.show', compact('producto', 'tallas', 'categoria'));
     }
 
     public function create()

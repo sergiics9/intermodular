@@ -2,82 +2,126 @@
 
 use App\Core\Auth;
 
-$fields = ['puntuacion', 'critica'];
-$values = escapeArray(formDefaults($fields));
-$errors = escapeArray(session()->getFlash('errors', []));
+$categoria = $producto->categoria();
+$tallas = $producto->tallas()->get();
 ?>
 
-<div class="container mt-4">
-    <!-- Mostrar mensajes de error y éxito si existen -->
-    <?php include __DIR__ . '/../partials/messages.php'; ?>
+<div class="container mt-5">
+    <div class="row">
+        <!-- Imagen del producto -->
+        <div class="col-md-6 mb-4">
+            <div class="product-image-container">
+                <img src="<?= BASE_URL ?>/images/<?= $producto->id ?>.webp"
+                    class="img-fluid rounded shadow"
+                    alt="<?= htmlspecialchars($producto->nombre) ?>"
+                    style="width: 100%; max-height: 500px; object-fit: cover;">
+            </div>
+        </div>
 
-    <!-- Mostrar errores si existen -->
-    <?php include __DIR__ . '/../partials/errors.php'; ?>
+        <!-- Detalles del producto -->
+        <div class="col-md-6">
+            <div class="product-details-flex" data-product-id="<?= $producto->id ?>">
+                <h3 class="mb-3 fw-bold"><?= htmlspecialchars($producto->nombre) ?></h3>
 
-    <h1 class="mb-2"><?= htmlspecialchars($pelicula->titulo) ?></h1>
-    <h4 class="mb-3">
-        <?= $pelicula->director ? htmlspecialchars($pelicula->director->nombre) : 'Sin director' ?>
-    </h4>
-    <div class="mb-3">
-        <?= htmlspecialchars($pelicula->sinopsis) ?>
+                <?php if ($categoria): ?>
+                    <div class="mb-3">
+                        <span class="badge bg-secondary"><?= htmlspecialchars($categoria->nombre) ?></span>
+                    </div>
+                <?php endif; ?>
+
+                <p class="fs-4 fw-bold text-primary mb-4"><?= number_format($producto->precio, 2) ?>€</p>
+
+                <div class="mb-4">
+                    <h5 class="mb-2">Descripción:</h5>
+                    <p class="text-muted"><?= nl2br(htmlspecialchars($producto->descripcion)) ?></p>
+                </div>
+
+                <?php if (!empty($tallas)): ?>
+                    <div class="mb-4">
+                        <h5 class="mb-2">Tallas disponibles:</h5>
+                        <div class="size-options">
+                            <?php foreach ($tallas as $talla): ?>
+                                <span class="size-option"><?= htmlspecialchars($talla->tallas) ?></span>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
+                <div class="d-grid gap-2 mt-4">
+                    <button class="btn btn-primary btn-lg add-to-cart" disabled>
+                        <i class="fas fa-shopping-cart me-2"></i>Añadir al carrito
+                    </button>
+                </div>
+
+                <?php if (Auth::check() && Auth::role() == 1): ?>
+                    <div class="mt-4 admin-actions">
+                        <a href="<?= BASE_URL ?>/productos/edit.php?id=<?= $producto->id ?>" class="btn btn-warning">
+                            <i class="fas fa-edit me-2"></i>Editar
+                        </a>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                            <i class="fas fa-trash me-2"></i>Eliminar
+                        </button>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
     </div>
-    <p class="mb-4">
-        <?= htmlspecialchars($pelicula->estreno) ?> · <?= htmlspecialchars($pelicula->duracion) ?> min
-    </p>
 
-    <?php $premios = $pelicula->premios; ?>
-    <?php if (!empty($premios)): ?>
-        <div class="card mb-4 p-3">
-            <h5>Premios</h5>
-            <?php foreach ($premios as $premio): ?>
-                <div><?= htmlspecialchars($premio->nombre) ?> (<?= htmlspecialchars($premio->edicion) ?>)</div>
-            <?php endforeach; ?>
+    <!-- Productos relacionados -->
+    <?php if ($categoria && count($categoria->productos()->get()) > 1): ?>
+        <div class="mt-5">
+            <h3 class="mb-4">Productos relacionados</h3>
+            <div class="row">
+                <?php
+                $productosRelacionados = $categoria->productos()->where('id', '!=', $producto->id)->limit(4)->get();
+                foreach ($productosRelacionados as $productoRelacionado):
+                ?>
+                    <div class="col-md-3 col-sm-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <img src="<?= BASE_URL ?>/images/<?= $productoRelacionado->id ?>.webp"
+                                class="card-img-top"
+                                alt="<?= htmlspecialchars($productoRelacionado->nombre) ?>"
+                                style="height: 200px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title"><?= htmlspecialchars($productoRelacionado->nombre) ?></h5>
+                                <p class="card-text text-primary fw-bold"><?= number_format($productoRelacionado->precio, 2) ?>€</p>
+                                <a href="<?= BASE_URL ?>/productos/show.php?id=<?= $productoRelacionado->id ?>" class="btn btn-outline-primary">Ver detalles</a>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
         </div>
     <?php endif; ?>
-
-    <?php $votos = $pelicula->votos()->where('critica', "!=", null)->get(); ?>
-    <?php if (!empty($votos)): ?>
-        <div class="card mb-4 p-3">
-            <h5>Críticas de los usuarios</h5>
-            <?php foreach ($votos as $voto): ?>
-                <div class="mb-3">
-                    <strong><?= htmlspecialchars($voto->usuario->nombre ?? 'Anónimo') ?></strong>
-                    <span class="text-muted">(<?= $voto->puntuacion ?>/10)</span>
-                    <div style="white-space: pre-wrap;"><?= htmlspecialchars($voto->critica) ?></div>
-                </div>
-            <?php endforeach; ?>
-        </div>
-    <?php endif; ?>
-
-
-    <?php if (Auth::check()): ?>
-        <div class="card mb-4 p-3">
-            <h5>Votar esta película</h5>
-            <form action="<?= BASE_URL . '/votos/store.php' ?>" method="POST">
-                <input type="hidden" name="pelicula_id" value="<?= $pelicula->id ?>">
-                <div class="mb-3">
-                    <input
-                        type="number" name="puntuacion"
-                        class="form-control "
-                        min="0" max="10" required
-                        placeholder="Puntuación (1 a 10)"
-                        value="<?= $values['puntuacion'] ?>">
-                    <?php if (isset($errors['puntuacion'])): ?>
-                        <div class="invalid-feedback d-block"><?= $errors['puntuacion'] ?></div>
-                    <?php endif; ?>
-                </div>
-                <textarea
-                    name="critica"
-                    class="form-control"
-                    rows="4"
-                    placeholder="Crítica (opcional)"><?= $values['critica'] ?></textarea>
-                <button type="submit" class="btn btn-primary">Enviar voto</button>
-            </form>
-        </div>
-    <?php else: ?>
-        <div class="alert alert-info">Inicia sesión para votar y dejar una crítica.</div>
-    <?php endif; ?>
-
-    <a href="<?= previousUrl() ?>" class="btn btn-outline-secondary mt-3">← Volver</a>
-
 </div>
+
+<!-- Modal de confirmación para eliminar -->
+<?php if (Auth::check() && Auth::role() == 1): ?>
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Confirmar eliminación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <form action="<?= BASE_URL ?>/productos/destroy.php" method="POST">
+                        <input type="hidden" name="id" value="<?= $producto->id ?>">
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+
+<!-- Script para la selección de tallas -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        setupSizeSelection();
+    });
+</script>

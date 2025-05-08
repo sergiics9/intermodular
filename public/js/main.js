@@ -18,13 +18,16 @@ function setupSizeSelection() {
 
       sizeOptions.forEach((option) => {
         option.addEventListener("click", () => {
+          // Quitar la clase 'selected' de la talla previamente seleccionada
           if (selectedSize) {
             selectedSize.classList.remove("selected");
           }
 
+          // Añadir la clase 'selected' a la talla actual
           option.classList.add("selected");
           selectedSize = option;
 
+          // Habilitar el botón de añadir al carrito
           addToCartButton.disabled = false;
         });
       });
@@ -48,12 +51,16 @@ function addToCart(event) {
     ".product, .product-details-flex"
   );
 
+  // Obtener información del producto
   const productName = productElement.querySelector("h3").innerText;
-  const productPrice = parseFloat(
+  const productPrice = Number.parseFloat(
     productElement.querySelector("p").innerText.replace("€", "")
   );
-  const productId = parseInt(productElement.getAttribute("data-product-id"));
+  const productId = Number.parseInt(
+    productElement.getAttribute("data-product-id")
+  );
 
+  // Verificar que se haya seleccionado una talla
   const sizeOption = productElement.querySelector(".size-option.selected");
   if (!sizeOption) {
     alert("Por favor, selecciona una talla");
@@ -61,6 +68,7 @@ function addToCart(event) {
   }
   const productSize = sizeOption.innerText;
 
+  // Crear objeto del producto
   const product = {
     id: productId,
     name: productName,
@@ -68,51 +76,146 @@ function addToCart(event) {
     size: productSize,
   };
 
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  // Obtener carrito actual o crear uno nuevo
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
   cart.push(product);
   localStorage.setItem("cart", JSON.stringify(cart));
 
-  alert("Producto añadido al carrito");
+  // Mostrar mensaje de confirmación
+  const toast = document.createElement("div");
+  toast.className = "position-fixed bottom-0 end-0 p-3";
+  toast.style.zIndex = "11";
+  toast.innerHTML = `
+    <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <strong class="me-auto">Carrito</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        <strong>${productName}</strong> (Talla: ${productSize}) añadido al carrito.
+      </div>
+    </div>
+  `;
+  document.body.appendChild(toast);
+
+  // Eliminar el toast después de 3 segundos
+  setTimeout(() => {
+    toast.remove();
+  }, 3000);
 }
 
+// Función para manejar el formulario de compra
+function setupPurchaseForm() {
+  const form = document.getElementById("formCompra");
+  if (form) {
+    form.addEventListener("submit", handleFormSubmit);
+  }
+}
+
+function handleFormSubmit(event) {
+  event.preventDefault();
+
+  const nombre = document.getElementById("nombre").value;
+  const email = document.getElementById("email").value;
+  const direccion = document.getElementById("direccion").value;
+  const telefono = document.getElementById("telefono").value;
+
+  if (!nombre || !email || !direccion || !telefono) {
+    alert("Por favor, completa todos los campos");
+    return;
+  }
+
+  const datos = {
+    nombre,
+    email,
+    direccion,
+    telefono,
+    carrito: getCart(),
+  };
+
+  datos.carrito = datos.carrito.map((item) => ({
+    ...item,
+    quantity: 1,
+    id: item.id || null,
+  }));
+
+  fetch("procesar_pedido.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify(datos),
+  })
+    .then((response) => response.json())
+    .then((jsonResponse) => {
+      if (jsonResponse.success) {
+        localStorage.removeItem("cart");
+        window.location.href = "confirmacion.php";
+      } else {
+        alert("Error al procesar el pedido: " + jsonResponse.message);
+      }
+    })
+    .catch((error) => {
+      console.error("Error al enviar los datos:", error);
+    });
+}
+
+// Función para obtener el carrito desde localStorage
+function getCart() {
+  return JSON.parse(localStorage.getItem("cart")) || [];
+}
+
+// Función para actualizar vista previa en formulario de creación/edición
 function actualizarVistaPrevia() {
-  const nombre = document.querySelector('input[name="nombre"]').value;
-  const precio = document.querySelector('input[name="precio"]').value;
-  const tallas = document.querySelector('input[name="tallas"]').value;
-  const imagen = document.querySelector('input[name="imagen"]').files[0];
+  const nombreInput = document.querySelector('input[name="nombre"]');
+  const precioInput = document.querySelector('input[name="precio"]');
+  const tallasInput = document.querySelector('input[name="tallas"]');
+  const imagenInput = document.querySelector('input[name="imagen"]');
+
+  if (!nombreInput || !precioInput) return;
 
   // Actualizar el nombre y precio
-  document.getElementById("preview-nombre").textContent = " " + nombre;
-  document.getElementById("preview-precio").textContent = " " + precio + " €";
+  const previewNombre = document.getElementById("preview-nombre");
+  const previewPrecio = document.getElementById("preview-precio");
+
+  if (previewNombre) previewNombre.textContent = " " + nombreInput.value;
+  if (previewPrecio) previewPrecio.textContent = " " + precioInput.value + " €";
 
   // Convertir las tallas separadas por comas a un formato con espacios
-  const tallasArray = tallas.split(",").map((talla) => talla.trim()); // Convertir a array y quitar espacios
-  document.getElementById("preview-tallas").textContent =
-    " " + tallasArray.join(" "); // Unir las tallas con un espacio
+  if (tallasInput && document.getElementById("preview-tallas")) {
+    const tallasArray = tallasInput.value
+      .split(",")
+      .map((talla) => talla.trim()); // Convertir a array y quitar espacios
+    document.getElementById("preview-tallas").textContent =
+      " " + tallasArray.join(" "); // Unir las tallas con un espacio
+  }
 
   // Mostrar imagen de vista previa
-  if (imagen) {
+  if (
+    imagenInput &&
+    imagenInput.files[0] &&
+    document.getElementById("preview-image")
+  ) {
     const reader = new FileReader();
-    reader.onload = function (e) {
+    reader.onload = (e) => {
       document.getElementById("preview-image").src = e.target.result;
     };
-    reader.readAsDataURL(imagen);
+    reader.readAsDataURL(imagenInput.files[0]);
   }
 }
 
 // Añadir eventos para actualizar vista previa al escribir en los campos
-document
-  .querySelector('input[name="nombre"]')
-  .addEventListener("input", actualizarVistaPrevia);
-document
-  .querySelector('input[name="precio"]')
-  .addEventListener("input", actualizarVistaPrevia);
-document
-  .querySelector('input[name="tallas"]')
-  .addEventListener("input", actualizarVistaPrevia);
-document
-  .querySelector('input[name="imagen"]')
-  .addEventListener("change", actualizarVistaPrevia);
+document.addEventListener("DOMContentLoaded", () => {
+  const nombreInput = document.querySelector('input[name="nombre"]');
+  const precioInput = document.querySelector('input[name="precio"]');
+  const tallasInput = document.querySelector('input[name="tallas"]');
+  const imagenInput = document.querySelector('input[name="imagen"]');
 
-// Llamar a la función de vista previa al cargar la página para que se inicialice
-window.addEventListener("load", actualizarVistaPrevia);
+  if (nombreInput) nombreInput.addEventListener("input", actualizarVistaPrevia);
+  if (precioInput) precioInput.addEventListener("input", actualizarVistaPrevia);
+  if (tallasInput) tallasInput.addEventListener("input", actualizarVistaPrevia);
+  if (imagenInput)
+    imagenInput.addEventListener("change", actualizarVistaPrevia);
+
+  // Llamar a la función de vista previa al cargar la página para que se inicialice
+  actualizarVistaPrevia();
+});
