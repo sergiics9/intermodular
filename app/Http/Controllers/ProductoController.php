@@ -68,6 +68,9 @@ class ProductoController
             }
         }
 
+        // Procesar imagen si se ha subido
+        $this->processImage($request, $producto->id);
+
         redirect('/productos/index.php')->with('success', 'Producto creado con éxito')->send();
     }
 
@@ -103,13 +106,68 @@ class ProductoController
             }
         }
 
+        // Procesar imagen si se ha subido
+        $this->processImage($request, $producto->id);
+
         redirect('/productos/index.php')->with('success', 'Producto actualizado con éxito')->send();
     }
 
     public function destroy(int $id)
     {
         $producto = Producto::findOrFail($id);
+
+        // Eliminar imagen si existe
+        $imagePath = __DIR__ . '/../../../public/images/' . $id . '.webp';
+        if (file_exists($imagePath)) {
+            unlink($imagePath);
+        }
+
         $producto->delete();
         redirect('/productos/index.php')->with('success', 'Producto eliminado con éxito')->send();
+    }
+
+    /**
+     * Procesa y guarda la imagen del producto
+     */
+    private function processImage(Request $request, int $productoId): void
+    {
+        if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+            $tmpName = $_FILES['imagen']['tmp_name'];
+            $targetPath = __DIR__ . '/../../../public/images/' . $productoId . '.webp';
+
+            // Convertir la imagen a webp
+            if (function_exists('imagecreatefromjpeg') && function_exists('imagewebp')) {
+                // Determinar el tipo de imagen
+                $imageInfo = getimagesize($tmpName);
+                $mime = $imageInfo['mime'];
+
+                switch ($mime) {
+                    case 'image/jpeg':
+                        $image = imagecreatefromjpeg($tmpName);
+                        break;
+                    case 'image/png':
+                        $image = imagecreatefrompng($tmpName);
+                        // Preservar transparencia
+                        imagepalettetotruecolor($image);
+                        imagealphablending($image, true);
+                        imagesavealpha($image, true);
+                        break;
+                    case 'image/webp':
+                        $image = imagecreatefromwebp($tmpName);
+                        break;
+                    default:
+                        // Si no es un formato soportado, mover el archivo sin convertir
+                        move_uploaded_file($tmpName, $targetPath);
+                        return;
+                }
+
+                // Guardar como webp
+                imagewebp($image, $targetPath, 80); // 80 es la calidad (0-100)
+                imagedestroy($image);
+            } else {
+                // Si las funciones GD no están disponibles, mover el archivo sin convertir
+                move_uploaded_file($tmpName, $targetPath);
+            }
+        }
     }
 }

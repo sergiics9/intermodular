@@ -19,7 +19,7 @@ class Middleware
 
         if (!in_array(Auth::role(), $roles)) {
             http_response_code(403);
-            view('errors.403.php');
+            view('errors.403');
         }
     }
 }

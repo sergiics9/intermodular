@@ -12,7 +12,7 @@ class Producto extends Model
 {
     protected static string $table = 'productos';
     protected static array $fillable = ['nombre', 'precio', 'descripcion', 'categoria_id'];
-    protected static array $relations = ['categoria', 'tallas', 'detallesPedido'];
+    protected static array $relations = ['categoria', 'tallas', 'detallesPedido', 'comentarios'];
 
     public function insert(): void
     {
@@ -48,6 +48,11 @@ class Producto extends Model
     public function detallesPedido(): QueryBuilder
     {
         return DetallePedido::where('ProductoID', $this->id);
+    }
+
+    public function comentarios(): QueryBuilder
+    {
+        return Comentario::where('producto_id', $this->id)->orderBy('fecha', 'DESC');
     }
 
     public function tallasDisponibles(): array

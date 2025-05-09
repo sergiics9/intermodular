@@ -93,6 +93,63 @@ $tallas = $producto->tallas()->get();
             </div>
         </div>
     <?php endif; ?>
+
+    <!-- Sección de comentarios -->
+    <div class="mt-5">
+        <h3 class="mb-4">Comentarios (<?= count($producto->comentarios()->get()) ?>)</h3>
+
+        <?php if (Auth::check()): ?>
+            <!-- Formulario para añadir comentarios -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form action="<?= BASE_URL ?>/comentarios/store.php" method="POST">
+                        <input type="hidden" name="producto_id" value="<?= $producto->id ?>">
+                        <div class="mb-3">
+                            <label for="texto" class="form-label">Deja tu comentario</label>
+                            <textarea class="form-control" id="texto" name="texto" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Publicar comentario</button>
+                    </form>
+                </div>
+            </div>
+        <?php else: ?>
+            <div class="alert alert-info mb-4">
+                <a href="<?= BASE_URL ?>/auth/show-login.php">Inicia sesión</a> para dejar un comentario.
+            </div>
+        <?php endif; ?>
+
+        <!-- Lista de comentarios -->
+        <?php
+        $comentarios = $producto->comentarios()->get();
+        if (empty($comentarios)):
+        ?>
+            <div class="alert alert-light">
+                No hay comentarios todavía. ¡Sé el primero en comentar!
+            </div>
+        <?php else: ?>
+            <?php foreach ($comentarios as $comentario): ?>
+                <div class="card mb-3">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong><?= htmlspecialchars($comentario->usuario()->nombre) ?></strong>
+                            <small class="text-muted ms-2"><?= date('d/m/Y H:i', strtotime($comentario->fecha)) ?></small>
+                        </div>
+                        <?php if (Auth::check() && Auth::role() == 1): ?>
+                            <form action="<?= BASE_URL ?>/comentarios/destroy.php" method="POST" class="d-inline">
+                                <input type="hidden" name="id" value="<?= $comentario->id ?>">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de eliminar este comentario?')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        <?php endif; ?>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text"><?= nl2br(htmlspecialchars($comentario->texto)) ?></p>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </div>
 </div>
 
 <!-- Modal de confirmación para eliminar -->
