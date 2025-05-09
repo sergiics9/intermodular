@@ -55,6 +55,17 @@ class Request
         return $this->session;
     }
 
+    // Método para depurar el contenido de la solicitud
+    public function debug(): array
+    {
+        return [
+            'GET' => $_GET,
+            'POST' => $_POST,
+            'FILES' => $_FILES,
+            'data' => $this->data
+        ];
+    }
+
     public static function fake(array $data = [], array $files = [], array $server = []): static
     {
         $instance = new static();

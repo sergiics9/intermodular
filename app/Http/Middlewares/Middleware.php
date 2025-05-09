@@ -17,9 +17,13 @@ class Middleware
     {
         self::auth();
 
-        if (!in_array(Auth::role(), $roles)) {
+        // Depuración para verificar el rol del usuario
+        $userRole = Auth::role();
+
+        if (!in_array($userRole, $roles)) {
             http_response_code(403);
             view('errors.403');
+            exit; // Añadir exit para asegurar que la ejecución se detiene
         }
     }
 }

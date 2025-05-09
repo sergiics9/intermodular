@@ -13,6 +13,7 @@ use App\Models\Producto;
 use App\Models\Categoria;
 use App\Models\Talla;
 use App\Core\DB;
+use App\Core\Auth;
 
 class ProductoController
 {
@@ -45,12 +46,26 @@ class ProductoController
 
     public function create()
     {
+        // Verificar permisos de administrador
+        if (!Auth::check() || Auth::role() !== 1) {
+            http_response_code(403);
+            view('errors.403');
+            exit;
+        }
+
         $categorias = Categoria::all();
         view('productos.create', compact('categorias'));
     }
 
     public function store(Request $request)
     {
+        // Verificar permisos de administrador
+        if (!Auth::check() || Auth::role() !== 1) {
+            http_response_code(403);
+            view('errors.403');
+            exit;
+        }
+
         $producto = new Producto();
         $producto->nombre = $request->nombre;
         $producto->precio = $request->precio;
@@ -59,12 +74,22 @@ class ProductoController
         $producto->save();
 
         // Guardar tallas si existen
-        if ($request->tallas && is_array($request->tallas)) {
-            foreach ($request->tallas as $tallaValor) {
-                $talla = new Talla();
-                $talla->id_producto = $producto->id;
-                $talla->tallas = $tallaValor;
-                $talla->save();
+        $tallas = $request->tallas;
+        if (is_string($tallas) && !empty($tallas)) {
+            // Convertir string a array
+            $tallas = explode(',', $tallas);
+            // Limpiar espacios
+            $tallas = array_map('trim', $tallas);
+        }
+
+        if (is_array($tallas) && !empty($tallas)) {
+            foreach ($tallas as $tallaValor) {
+                if (!empty(trim($tallaValor))) {
+                    $talla = new Talla();
+                    $talla->id_producto = $producto->id;
+                    $talla->tallas = trim($tallaValor);
+                    $talla->save();
+                }
             }
         }
 
@@ -76,6 +101,13 @@ class ProductoController
 
     public function edit(int $id)
     {
+        // Verificar permisos de administrador
+        if (!Auth::check() || Auth::role() !== 1) {
+            http_response_code(403);
+            view('errors.403');
+            exit;
+        }
+
         $producto = Producto::findOrFail($id);
         $categorias = Categoria::all();
         view('productos.edit', compact('producto', 'categorias'));
@@ -83,7 +115,14 @@ class ProductoController
 
     public function update(Request $request)
     {
-        $producto = Producto::findOrFail($request->id);
+        // Verificar permisos de administrador
+        if (!Auth::check() || Auth::role() !== 1) {
+            http_response_code(403);
+            view('errors.403');
+            exit;
+        }
+
+        $producto = Producto::findOrFail((int)$request->id);
         $producto->nombre = $request->nombre;
         $producto->precio = $request->precio;
         $producto->descripcion = $request->descripcion;
@@ -96,13 +135,17 @@ class ProductoController
             $talla->delete();
         }
 
-        // Guardar nuevas tallas
-        if ($request->tallas && is_array($request->tallas)) {
-            foreach ($request->tallas as $tallaValor) {
-                $talla = new Talla();
-                $talla->id_producto = $producto->id;
-                $talla->tallas = $tallaValor;
-                $talla->save();
+        // Guardar nuevas tallas - acceder directamente a $_POST para evitar problemas
+        $tallas = $_POST['tallas'] ?? [];
+
+        if (is_array($tallas) && !empty($tallas)) {
+            foreach ($tallas as $tallaValor) {
+                if (!empty(trim($tallaValor))) {
+                    $talla = new Talla();
+                    $talla->id_producto = $producto->id;
+                    $talla->tallas = trim($tallaValor);
+                    $talla->save();
+                }
             }
         }
 
@@ -114,6 +157,13 @@ class ProductoController
 
     public function destroy(int $id)
     {
+        // Verificar permisos de administrador
+        if (!Auth::check() || Auth::role() !== 1) {
+            http_response_code(403);
+            view('errors.403');
+            exit;
+        }
+
         $producto = Producto::findOrFail($id);
 
         // Eliminar imagen si existe

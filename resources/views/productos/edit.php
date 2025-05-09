@@ -1,16 +1,31 @@
 <?php
 
-
 use App\Core\Auth;
 use App\Core\DB;
 
 // Verificar permisos de administrador
-if (!Auth::check() || Auth::role() != 1) {
+if (!Auth::check() || Auth::role() !== 1) {
     redirect('/productos/index.php')->with('error', 'No tienes permisos para acceder a esta página')->send();
+    exit;
 }
 
+// Obtener valores del producto para el formulario
 $fields = ['nombre', 'precio', 'descripcion', 'categoria_id'];
-$values = escapeArray(formDefaults($fields, $producto ?? null));
+$values = [];
+
+// Primero intentar obtener valores de la sesión (en caso de error de validación)
+$old = session()->getFlash('old', []);
+if (!empty($old)) {
+    foreach ($fields as $field) {
+        $values[$field] = $old[$field] ?? ($producto->$field ?? '');
+    }
+} else {
+    // Si no hay valores en la sesión, usar los del producto
+    foreach ($fields as $field) {
+        $values[$field] = $producto->$field ?? '';
+    }
+}
+
 $errors = escapeArray(session()->getFlash('errors', []));
 
 // Obtener las tallas actuales del producto

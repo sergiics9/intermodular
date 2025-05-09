@@ -46,7 +46,13 @@ class Auth
     public static function role(): ?int
     {
         $user = self::user(); // Obtener el usuario una vez
-        return $user ? (int)$user['role'] : null; // Convertir a int y verificar si no es null
+
+        // Depuración para verificar el valor del rol
+        if ($user) {
+            $role = (int)$user['role'];
+            return $role;
+        }
+        return null;
     }
 
     public static function logout(): void

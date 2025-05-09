@@ -9,9 +9,16 @@ use App\Http\Middlewares\Middleware;
 use App\Http\Validators\ProductoValidator;
 use App\Http\Controllers\ProductoController;
 use App\Core\ErrorHandler;
+use App\Core\Auth;
 
 try {
-    Middleware::role(['admin']);
+    // Verificar si el usuario está autenticado y es administrador
+    if (!Auth::check() || Auth::role() !== 1) {
+        http_response_code(403);
+        view('errors.403');
+        exit;
+    }
+
     $request = new Request();
     ProductoValidator::validate($request);
     (new ProductoController())->store($request);

@@ -3,8 +3,9 @@
 use App\Core\Auth;
 
 // Verificar permisos de administrador
-if (!Auth::check() || Auth::role() != 1) {
+if (!Auth::check() || Auth::role() !== 1) {
     redirect('/productos/index.php')->with('error', 'No tienes permisos para acceder a esta página')->send();
+    exit;
 }
 
 $errors = escapeArray(session()->getFlash('errors', []));

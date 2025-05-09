@@ -19,7 +19,13 @@ class ProductoValidator
         }
 
         // Validar precio
-        if (!isset($request->precio) || !is_numeric($request->precio) || $request->precio <= 0) {
+        $precio = $request->precio;
+        if (is_string($precio)) {
+            // Reemplazar coma por punto si es necesario
+            $precio = str_replace(',', '.', $precio);
+        }
+
+        if (empty($precio) || !is_numeric($precio) || (float)$precio <= 0) {
             $errors['precio'] = 'El precio debe ser un número mayor que cero.';
         }
 
@@ -29,17 +35,21 @@ class ProductoValidator
         }
 
         // Validar categoría
-        if (empty($request->categoria_id)) {
+        $categoria_id = $request->categoria_id;
+        if (empty($categoria_id)) {
             $errors['categoria_id'] = 'Debe seleccionar una categoría.';
         } else {
-            $categoria = Categoria::find((int)$request->categoria_id);
+            $categoria = Categoria::find((int)$categoria_id);
             if (!$categoria) {
                 $errors['categoria_id'] = 'La categoría seleccionada no es válida.';
             }
         }
 
         // Validar tallas
-        if (empty($request->tallas) || !is_array($request->tallas) || count($request->tallas) === 0) {
+        // Acceder directamente a $_POST para evitar problemas con la propiedad mágica
+        $tallas = $_POST['tallas'] ?? [];
+
+        if (empty($tallas) || !is_array($tallas) || count($tallas) === 0) {
             $errors['tallas'] = 'Debe seleccionar al menos una talla.';
         }
 
@@ -63,7 +73,7 @@ class ProductoValidator
                 'precio' => $request->precio,
                 'descripcion' => $request->descripcion,
                 'categoria_id' => $request->categoria_id,
-                'tallas' => $request->tallas,
+                'tallas' => $_POST['tallas'] ?? [],
             ])->send();
         }
     }

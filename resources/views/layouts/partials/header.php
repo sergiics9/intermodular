@@ -31,9 +31,16 @@ use App\Core\Auth; ?>
                     <div class="dropdown d-inline-block">
                         <button class="btn btn-outline-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-user"></i> <?= htmlspecialchars(Auth::user()['nombre']) ?>
+                            <?php if (Auth::role() === 1): ?>
+                                <span class="badge bg-danger">Admin</span>
+                            <?php endif; ?>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item" href="<?= BASE_URL . '/pedidos/index.php'; ?>">Mis Pedidos</a></li>
+                            <?php if (Auth::role() === 1): ?>
+                                <li><a class="dropdown-item" href="<?= BASE_URL . '/productos/create.php'; ?>">Añadir Producto</a></li>
+                                <li><a class="dropdown-item" href="<?= BASE_URL . '/contacto/admin.php'; ?>">Mensajes de Contacto</a></li>
+                            <?php endif; ?>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
