@@ -5,7 +5,7 @@ use App\Core\Auth; ?>
     <div class="container-fluid">
         <div class="row align-items-center">
             <div class="col-3">
-                <a href="<?= BASE_URL ?>" class="text-white text-decoration-none">
+                <a href="<?= BASE_URL ?>/productos" class="text-white text-decoration-none">
                     <h3>Tienda Online</h3>
                 </a>
             </div>

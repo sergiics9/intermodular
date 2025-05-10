@@ -23,6 +23,23 @@ class ProductoController
         view('productos.index', compact('productos'));
     }
 
+    // Añadir el método search después del método index
+    public function search(Request $request)
+    {
+        $q = trim($request->q ?? '');
+
+        if (empty($q)) {
+            redirect('/productos/index.php')->send();
+        }
+
+        // Buscar productos que coincidan con el término de búsqueda en nombre o descripción
+        $sql = "SELECT * FROM productos WHERE nombre LIKE ? OR descripcion LIKE ?";
+        $params = ["%$q%", "%$q%"];
+        $productos = DB::select(Producto::class, $sql, $params);
+
+        view('productos.search', compact('productos', 'q'));
+    }
+
     public function show(int $id)
     {
         $producto = Producto::findOrFail($id);
