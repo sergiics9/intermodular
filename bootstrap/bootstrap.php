@@ -17,5 +17,7 @@ require_once __DIR__ . '/../app/Core/ErrorHandler.php';
 require_once __DIR__ . '/../app/Core/helpers.php';
 
 require_once __DIR__ . '/../app/Models/Usuario.php';
+require_once __DIR__ . '/../app/Models/Categoria.php';
 require_once __DIR__ . '/../app/Models/Producto.php';
 require_once __DIR__ . '/../app/Models/Comentario.php';
+require_once __DIR__ . '/../app/Models/Contacto.php';

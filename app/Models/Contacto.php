@@ -10,13 +10,13 @@ use App\Core\DB;
 class Contacto extends Model
 {
     protected static string $table = 'contacto';
-    protected static array $fillable = ['nombre', 'email', 'mensaje'];
+    protected static array $fillable = ['nombre', 'email', 'mensaje', 'fecha_envio'];
 
     public function insert(): void
     {
         $sql = "INSERT INTO " . self::$table
-            . " (nombre, email, mensaje)"
-            . " VALUES (?, ?, ?)";
+            . " (nombre, email, mensaje, fecha_envio)"
+            . " VALUES (?, ?, ?, NOW())";
         $params = [$this->nombre, $this->email, $this->mensaje];
         $this->id = DB::insert($sql, $params);
     }

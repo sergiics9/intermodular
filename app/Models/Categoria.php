@@ -13,6 +13,7 @@ class Categoria extends Model
     protected static string $table = 'categorias';
     protected static array $fillable = ['nombre'];
     protected static array $relations = ['productos'];
+    protected static array $aggregates = ['cantidad_productos']; // Añadimos esta línea
 
     public function insert(): void
     {

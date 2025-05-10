@@ -1,10 +1,10 @@
 <?php
 
 require_once __DIR__ . '/../../bootstrap/bootstrap.php';
-require_once __DIR__ . '/../../app/Http/Controllers/CategoriaController.php';
+require_once __DIR__ . '/../../app/Http/Controllers/ContactoController.php';
 
 use App\Core\Request;
-use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\ContactoController;
 use App\Core\ErrorHandler;
 use App\Core\Auth;
 
@@ -16,7 +16,7 @@ try {
         exit;
     }
 
-    (new CategoriaController())->create();
+    (new ContactoController())->admin();
 } catch (Throwable $e) {
     ErrorHandler::handle($e);
 }
