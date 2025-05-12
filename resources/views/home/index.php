@@ -1,6 +1,6 @@
 <div class="container mt-4">
     <div class="jumbotron">
-        <h1>Bienvenido a nuestra Tienda Online</h1>
+        <h1>Bienvenido a STYLESPHERE</h1>
         <p class="lead">Descubre nuestra colección de productos</p>
     </div>
 

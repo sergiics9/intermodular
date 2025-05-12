@@ -10,12 +10,14 @@ use App\Core\Auth; ?>
     <div class="row g-4">
         <?php foreach ($productos as $producto): ?>
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <div class="card h-100 shadow-sm border-0">
+                <div class="card h-100 shadow-sm border-0 product-card">
                     <a href="<?= BASE_URL ?>/productos/show.php?id=<?= $producto->id ?>" class="text-decoration-none">
-                        <img src="<?= BASE_URL ?>/images/<?= $producto->id ?>.webp"
-                            class="card-img-top"
-                            alt="Imagen de <?= htmlspecialchars($producto->nombre) ?>"
-                            style="width: 100%; height: 250px; object-fit: cover;">
+                        <div class="card-img-container">
+                            <img src="<?= BASE_URL ?>/images/<?= $producto->id ?>.webp"
+                                class="card-img-top"
+                                alt="Imagen de <?= htmlspecialchars($producto->nombre) ?>"
+                                style="width: 100%; height: 250px; object-fit: cover;">
+                        </div>
                     </a>
 
                     <div class="card-body text-center">
