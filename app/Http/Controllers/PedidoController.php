@@ -9,6 +9,7 @@ use App\Core\Auth;
 use App\Models\Pedido;
 use App\Models\DetallePedido;
 use App\Models\Producto;
+use App\Core\DB;
 
 class PedidoController
 {
@@ -40,7 +41,13 @@ class PedidoController
             redirect('/pedidos/index.php')->with('error', 'No tienes permiso para ver este pedido')->send();
         }
 
-        view('pedidos.show', compact('pedido'));
+        // Obtener los detalles del pedido directamente de la base de datos
+        $detalles = DB::selectAssoc("SELECT dp.*, p.nombre, p.id as producto_id 
+                                FROM detalles_pedido dp 
+                                LEFT JOIN productos p ON dp.ProductoID = p.id 
+                                WHERE dp.PedidoID = ?", [$id]);
+
+        view('pedidos.show', compact('pedido', 'detalles'));
     }
 
     /**
@@ -146,6 +153,12 @@ class PedidoController
             return;
         }
 
-        view('carrito.confirmacion', compact('pedido'));
+        // Fetch order details with product information
+        $detalles = DB::selectAssoc("SELECT dp.*, p.nombre, p.id as producto_id 
+                                FROM detalles_pedido dp 
+                                LEFT JOIN productos p ON dp.ProductoID = p.id 
+                                WHERE dp.PedidoID = ?", [$id]);
+
+        view('carrito.confirmacion', compact('pedido', 'detalles'));
     }
 }

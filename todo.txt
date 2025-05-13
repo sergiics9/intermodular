@@ -1,2 +1,2 @@
-terminar carrito
-revisar header parte de cerrar sesion etc...
+cuando entro a mis pedidos todos se muestran con la fecha actual y hora 
+y cuando entro dentro del pedido la fecha se muestra como N/A.

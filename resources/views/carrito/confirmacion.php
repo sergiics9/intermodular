@@ -1,6 +1,7 @@
 <?php
 
 use App\Core\Auth;
+use App\Core\DB;
 ?>
 
 <div class="container mt-5">
@@ -22,7 +23,7 @@ use App\Core\Auth;
                     <div class="alert alert-info">
                         <h5><i class="fas fa-info-circle me-2"></i>Detalles del pedido</h5>
                         <p><strong>Número de pedido:</strong> #<?= $pedido->id ?></p>
-                        <p><strong>Fecha:</strong> <?= date('d/m/Y H:i', strtotime($pedido->Fecha)) ?></p>
+                        <p><strong>Fecha:</strong> <?= isset($pedido->Fecha) && $pedido->Fecha ? date('d/m/Y H:i', strtotime($pedido->Fecha)) : date('d/m/Y H:i') ?></p>
                         <p><strong>Total:</strong> <?= number_format($pedido->Total, 2) ?> €</p>
                     </div>
 
@@ -47,21 +48,26 @@ use App\Core\Auth;
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($pedido->detalles()->get() as $detalle): ?>
-                                        <?php $producto = $detalle->producto(); ?>
+                                    <?php if (isset($detalles) && !empty($detalles)): ?>
+                                        <?php foreach ($detalles as $detalle): ?>
+                                            <tr>
+                                                <td>
+                                                    <?php if (isset($detalle['nombre'])): ?>
+                                                        <?= htmlspecialchars($detalle['nombre']) ?>
+                                                    <?php else: ?>
+                                                        Producto no disponible
+                                                    <?php endif; ?>
+                                                </td>
+                                                <td><?= htmlspecialchars($detalle['talla'] ?? 'N/A') ?></td>
+                                                <td><?= $detalle['Cantidad'] ?></td>
+                                                <td class="text-end"><?= number_format($detalle['Precio'] * $detalle['Cantidad'], 2) ?> €</td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
                                         <tr>
-                                            <td>
-                                                <?php if ($producto): ?>
-                                                    <?= htmlspecialchars($producto->nombre) ?>
-                                                <?php else: ?>
-                                                    Producto no disponible
-                                                <?php endif; ?>
-                                            </td>
-                                            <td><?= htmlspecialchars($detalle->talla) ?></td>
-                                            <td><?= $detalle->Cantidad ?></td>
-                                            <td class="text-end"><?= number_format($detalle->Precio * $detalle->Cantidad, 2) ?> €</td>
+                                            <td colspan="4" class="text-center">No hay detalles disponibles</td>
                                         </tr>
-                                    <?php endforeach; ?>
+                                    <?php endif; ?>
                                 </tbody>
                                 <tfoot>
                                     <tr>
