@@ -40,7 +40,7 @@ class Auth
     public static function id(): ?int
     {
         $user = self::user(); // Obtener el usuario una vez
-        return $user ? $user['id'] : null; // Verificar si no es null
+        return $user ? (int)$user['id'] : null; // Verificar si no es null y convertir a int
     }
 
     public static function role(): ?int

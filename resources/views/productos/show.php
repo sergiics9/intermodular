@@ -37,21 +37,29 @@ $tallas = $producto->tallas()->get();
                 </div>
 
                 <?php if (!empty($tallas)): ?>
-                    <div class="mb-4">
-                        <h5 class="mb-2">Tallas disponibles:</h5>
-                        <div class="size-options">
-                            <?php foreach ($tallas as $talla): ?>
-                                <span class="size-option"><?= htmlspecialchars($talla->tallas) ?></span>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-                <?php endif; ?>
+                    <form action="<?= BASE_URL ?>/carrito/add.php" method="post">
+                        <input type="hidden" name="producto_id" value="<?= $producto->id ?>">
+                        <input type="hidden" name="cantidad" value="1">
 
-                <div class="d-grid gap-2 mt-4">
-                    <button class="btn btn-primary btn-lg add-to-cart" disabled>
-                        <i class="fas fa-shopping-cart me-2"></i>Añadir al carrito
-                    </button>
-                </div>
+                        <div class="mb-4">
+                            <h5 class="mb-2">Tallas disponibles:</h5>
+                            <div class="size-options">
+                                <?php foreach ($tallas as $talla): ?>
+                                    <label class="size-option-label">
+                                        <input type="radio" name="talla" value="<?= htmlspecialchars($talla->tallas) ?>" class="size-radio" required>
+                                        <span class="size-option"><?= htmlspecialchars($talla->tallas) ?></span>
+                                    </label>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-shopping-cart me-2"></i>Añadir al carrito
+                            </button>
+                        </div>
+                    </form>
+                <?php endif; ?>
 
                 <?php if (Auth::check() && Auth::role() == 1): ?>
                     <div class="mt-4 admin-actions">
@@ -176,9 +184,51 @@ $tallas = $producto->tallas()->get();
     </div>
 <?php endif; ?>
 
-<!-- Script para la selección de tallas -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        setupSizeSelection();
-    });
-</script>
+<style>
+    /* Estilos para las opciones de talla con radio buttons */
+    .size-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .size-option-label {
+        position: relative;
+        margin: 0;
+        cursor: pointer;
+    }
+
+    .size-radio {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .size-option {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+        transition: all 0.2s ease;
+        font-weight: 500;
+    }
+
+    .size-radio:checked+.size-option {
+        background-color: #0d6efd;
+        color: white;
+        border-color: #0d6efd;
+    }
+
+    .size-radio:focus+.size-option {
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+
+    .size-option:hover {
+        background-color: #f8f9fa;
+    }
+
+    .size-radio:checked+.size-option:hover {
+        background-color: #0b5ed7;
+    }
+</style>

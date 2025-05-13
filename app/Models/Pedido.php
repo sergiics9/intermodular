@@ -27,14 +27,14 @@ class Pedido extends Model
     {
         $sql = "UPDATE " . self::$table
             . " SET UsuarioID = ?, Nombre = ?, Email = ?, Direccion = ?, Telefono = ?, Total = ?"
-            . " WHERE PedidoID = ?";
-        $params = [$this->UsuarioID, $this->Nombre, $this->Email, $this->Direccion, $this->Telefono, $this->Total, $this->PedidoID];
+            . " WHERE id = ?";
+        $params = [$this->UsuarioID, $this->Nombre, $this->Email, $this->Direccion, $this->Telefono, $this->Total, $this->id];
         DB::update($sql, $params);
     }
 
     public function detalles(): QueryBuilder
     {
-        return DetallePedido::where('PedidoID', $this->PedidoID);
+        return DetallePedido::where('id', $this->id);
     }
 
     public function usuario(): ?Usuario
@@ -48,7 +48,7 @@ class Pedido extends Model
     public function __get($name)
     {
         if ($name === 'id') {
-            return $this->PedidoID;
+            return $this->id;
         }
         return parent::__get($name);
     }

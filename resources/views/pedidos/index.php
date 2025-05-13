@@ -28,12 +28,12 @@ use App\Core\Auth; ?>
                 <tbody>
                     <?php foreach ($pedidos as $pedido): ?>
                         <tr>
-                            <td><?= $pedido->PedidoID ?></td>
+                            <td><?= $pedido->id ?></td>
                             <td><?= date('d/m/Y H:i', strtotime($pedido->Fecha)) ?></td>
                             <td><?= htmlspecialchars($pedido->Nombre) ?></td>
                             <td>€<?= number_format($pedido->Total, 2) ?></td>
                             <td>
-                                <a href="<?= BASE_URL ?>/pedidos/show.php?id=<?= $pedido->PedidoID ?>" class="btn btn-info btn-sm">Ver detalles</a>
+                                <a href="<?= BASE_URL ?>/pedidos/show.php?id=<?= $pedido->id ?>" class="btn btn-info btn-sm">Ver detalles</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

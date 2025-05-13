@@ -65,6 +65,9 @@ function setTheme(themeName) {
 
 // Función para alternar entre temas
 function toggleTheme() {
+  // Prevent interference with Bootstrap dropdowns
+  event.stopPropagation();
+
   if (localStorage.getItem("theme") === "dark") {
     setTheme("light");
   } else {

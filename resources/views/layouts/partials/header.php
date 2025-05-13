@@ -6,12 +6,12 @@ use App\Core\Auth; ?>
         <div class="row align-items-center py-3">
             <div class="col-md-2 col-6">
                 <a href="<?= BASE_URL ?>/productos" class="text-decoration-none">
-                    <h3 class="brand-title mb-0">STYLESPHERE</h3>
+                    <h3 class="brand-title mb-0">Styleshpere</h3>
                 </a>
             </div>
             <div class="col-md-2 col-6 text-center d-none d-md-block">
                 <a href="<?= BASE_URL ?>/productos">
-                    <img src="<?= BASE_URL ?>/images/logo.png" alt="Logo" width="180" height="auto">
+                    <img src="<?= BASE_URL ?>/images/logo.png" alt="Logo" width="100" height="auto">
                 </a>
             </div>
             <div class="col-md-5 col-12 mt-3 mt-md-0">
@@ -42,14 +42,18 @@ use App\Core\Auth; ?>
                 <?php else: ?>
                     <div class="dropdown d-inline-block me-2">
                         <button class="btn btn-outline-primary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-user"></i> <?= htmlspecialchars(Auth::user()['nombre']) ?>
-                            <?php if (Auth::role() === 1): ?>
+                            <i class="fas fa-user"></i>
+                            <?php
+                            $user = Auth::user();
+                            echo htmlspecialchars($user ? $user['nombre'] : 'Usuario');
+                            ?>
+                            <?php if (Auth::check() && Auth::role() === 1): ?>
                                 <span class="badge bg-danger">Admin</span>
                             <?php endif; ?>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item" href="<?= BASE_URL . '/pedidos/index.php'; ?>">Mis Pedidos</a></li>
-                            <?php if (Auth::role() === 1): ?>
+                            <?php if (Auth::check() && Auth::role() === 1): ?>
                                 <li><a class="dropdown-item" href="<?= BASE_URL . '/productos/create.php'; ?>">Añadir Producto</a></li>
                                 <li><a class="dropdown-item" href="<?= BASE_URL . '/contacto/admin.php'; ?>">Mensajes de Contacto</a></li>
                             <?php endif; ?>

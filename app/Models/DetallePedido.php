@@ -27,13 +27,13 @@ class DetallePedido extends Model
         $sql = "UPDATE " . self::$table
             . " SET PedidoID = ?, ProductoID = ?, Cantidad = ?, Precio = ?, talla = ?"
             . " WHERE DetalleID = ?";
-        $params = [$this->PedidoID, $this->ProductoID, $this->Cantidad, $this->Precio, $this->talla, $this->DetalleID];
+        $params = [$this->PedidoID, $this->ProductoID, $this->Cantidad, $this->Precio, $this->talla, $this->id];
         DB::update($sql, $params);
     }
 
     public function pedido(): ?Pedido
     {
-        return Pedido::find($this->PedidoID);
+        return Pedido::find($this->id);
     }
 
     public function producto(): ?Producto
@@ -44,7 +44,7 @@ class DetallePedido extends Model
     public function __get($name)
     {
         if ($name === 'id') {
-            return $this->DetalleID;
+            return $this->id;
         }
         return parent::__get($name);
     }

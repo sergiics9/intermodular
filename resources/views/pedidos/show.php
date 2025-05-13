@@ -1,5 +1,5 @@
 <div class="container">
-    <h1 class="mb-4">Detalles del Pedido #<?= $pedido->PedidoID ?></h1>
+    <h1 class="mb-4">Detalles del Pedido #<?= $pedido->id ?></h1>
 
     <?php include __DIR__ . '/../partials/messages.php'; ?>
 
