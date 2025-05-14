@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 14-05-2025 a las 02:04:39
+-- Tiempo de generación: 14-05-2025 a las 02:34:36
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -189,15 +189,18 @@ CREATE TABLE `comentarios` (
   `producto_id` int(11) NOT NULL,
   `usuario_id` int(11) NOT NULL,
   `texto` text NOT NULL,
-  `fecha` datetime NOT NULL DEFAULT current_timestamp()
+  `fecha` datetime NOT NULL DEFAULT current_timestamp(),
+  `ip` varchar(45) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `comentarios`
 --
 
-INSERT INTO `comentarios` (`id`, `producto_id`, `usuario_id`, `texto`, `fecha`) VALUES
-(2, 42, 6, 'El papa no es negre', '2025-05-09 18:39:33');
+INSERT INTO `comentarios` (`id`, `producto_id`, `usuario_id`, `texto`, `fecha`, `ip`) VALUES
+(2, 42, 6, 'El papa no es negre', '2025-05-09 18:39:33', NULL),
+(3, 43, 6, 'asd', '2025-05-14 02:21:36', NULL),
+(4, 42, 8, 'asdasd', '2025-05-14 02:23:16', '::1');
 
 --
 -- Disparadores `comentarios`
@@ -290,7 +293,8 @@ INSERT INTO `detalles_pedido` (`id`, `PedidoID`, `ProductoID`, `Cantidad`, `Prec
 (30, 44, 45, 1, 65.00, 'L'),
 (31, 45, 44, 1, 39.00, 'XL'),
 (32, 45, 46, 1, 33.00, 'S'),
-(33, 46, 43, 1, 47.00, 'XL');
+(33, 46, 43, 1, 47.00, 'XL'),
+(34, 47, 43, 1, 47.00, 'M');
 
 -- --------------------------------------------------------
 
@@ -502,7 +506,8 @@ INSERT INTO `pedidos` (`id`, `UsuarioID`, `Nombre`, `Email`, `Direccion`, `Telef
 (43, 6, 'Carlos Latre', 'carloslatre@gmail.com', 'Calle fuerteventura, 1', '639503690', '2025-05-13 18:24:18', 65.00),
 (44, 6, 'Carlos Latre', 'carloslatre@gmail.com', 'Calle fuerteventura, 1', '639503690', '2025-05-13 18:25:23', 65.00),
 (45, 6, 'Carlos Latre', 'carloslatre@gmail.com', 'Calle fuerteventura, 1', '639503690', '2025-05-13 19:48:12', 72.00),
-(46, 6, 'Carlos Latre', 'carloslatre@gmail.com', 'Calle fuerteventura, 1', '639503690', '2025-05-13 19:53:21', 47.00);
+(46, 6, 'Carlos Latre', 'carloslatre@gmail.com', 'Calle fuerteventura, 1', '639503690', '2025-05-13 19:53:21', 47.00),
+(47, 9, 'Jordi', 'jordi@gmail.com', 'Calle fuerteventura, 1', '123456789', '2025-05-14 02:26:14', 47.00);
 
 -- --------------------------------------------------------
 
@@ -559,8 +564,8 @@ CREATE TABLE `productos` (
 --
 
 INSERT INTO `productos` (`id`, `nombre`, `precio`, `descripcion`, `fecha_creacion`, `categoria_id`, `num_comentarios`) VALUES
-(42, 'Camiseta Corta', 32.00, 'Ligera y fresca, la Camiseta Corta es ideal para los días calurosos o para combinar con tu estilo casual. Su ajuste cómodo y tejido transpirable la hacen una opción perfecta para cualquier ocasión.', '2025-02-20 16:03:22', 1, 1),
-(43, 'Camiseta Cybertruck', 47.00, 'Inspirada en el diseño futurista del Cybertruck, esta camiseta destaca por su estilo audaz y moderno. Perfecta para los fanáticos de la innovación y la tecnología, ofrece un ajuste cómodo y un look vanguardista.', '2025-02-20 16:03:45', 1, 0),
+(42, 'Camiseta Corta', 32.00, 'Ligera y fresca, la Camiseta Corta es ideal para los días calurosos o para combinar con tu estilo casual. Su ajuste cómodo y tejido transpirable la hacen una opción perfecta para cualquier ocasión.', '2025-02-20 16:03:22', 1, 2),
+(43, 'Camiseta Cybertruck', 47.00, 'Inspirada en el diseño futurista del Cybertruck, esta camiseta destaca por su estilo audaz y moderno. Perfecta para los fanáticos de la innovación y la tecnología, ofrece un ajuste cómodo y un look vanguardista.', '2025-02-20 16:03:45', 1, 1),
 (44, 'Camiseta Minimalista', 39.00, 'Disfruta del diseño elegante y sencillo de nuestra Camiseta Minimalista. Confeccionada con algodón suave y transpirable, es perfecta para cualquier ocasión, combinando estilo y comodidad.', '2025-02-20 16:04:10', 1, 0),
 (45, 'Sudadera Negra', 65.00, 'Una sudadera clásica y versátil que no puede faltar en tu armario. Hecha con tejido de alta calidad, te mantiene abrigado sin sacrificar el estilo. Ideal para combinar con cualquier outfit.', '2025-02-20 16:04:33', 2, 0),
 (46, 'Camiseta Gris Tesla', 33.00, 'Inspirada en la innovación y la tecnología, esta camiseta gris Tesla es perfecta para los amantes del diseño moderno. Su tejido premium ofrece confort y durabilidad para el día a día.', '2025-02-20 16:04:54', 1, 0),
@@ -814,6 +819,7 @@ CREATE TABLE `usuarios` (
   `email` varchar(100) DEFAULT NULL,
   `telefono` varchar(9) DEFAULT NULL,
   `fecha_registro` datetime DEFAULT current_timestamp(),
+  `ip_registro` varchar(45) DEFAULT NULL,
   `role` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -821,13 +827,15 @@ CREATE TABLE `usuarios` (
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `nombre`, `contraseña`, `email`, `telefono`, `fecha_registro`, `role`) VALUES
-(1, 'Sergi', '$2y$10$YEMEl9b.USZXaqJH4EqXqutCObAjD9jrnB/PLBxlEYHXCX40/pGZm', 'sergi22@gmail.com', '639503672', '2025-02-06 00:00:00', 1),
-(2, 'Jordi', '$2y$10$JiHg6AE83a4wVWZV34epDO/xPDXPhafdnsNA2TQ.tiZqat8BcxTC2', 'jordi2@gmail.com', '639503672', '2025-02-13 00:00:00', 0),
-(3, 'Sergi Casiano', '$2y$10$F6FwP2JSL/Bx9XkSj56pxuEnJoAPn88LkbL3g8ZOFCv7TCQrZPPBK', 'sergi4@gmail.com', '639503663', '2025-02-18 00:00:00', 1),
-(5, 'Sergi Casiano Soler', '$2y$10$6qpKPrF4TZ7f/KLcktw1Huo/VztVnLdI3w7gRcSCpiwsgPqTJXDji', 'sergi1@gmail.com', NULL, '2025-05-08 16:41:30', 0),
-(6, 'Carlos Latre', '$2y$10$cCh9KJaRgrOEg3yerOPJq.EC2CZXo0UJUd57XIIQQjvNwFfzxnykW', 'carloslatre@gmail.com', '639503690', '2025-05-08 16:46:14', 1),
-(7, 'Luis Suarez', '$2y$10$aUbobRVdBpkP9NTKb4FMA.jXzx5QqBied951UiTucFgUlmaXZFgUC', 'luissuarez@email.com', '639503643', '2025-05-10 17:38:12', 0);
+INSERT INTO `usuarios` (`id`, `nombre`, `contraseña`, `email`, `telefono`, `fecha_registro`, `ip_registro`, `role`) VALUES
+(1, 'Sergi', '$2y$10$YEMEl9b.USZXaqJH4EqXqutCObAjD9jrnB/PLBxlEYHXCX40/pGZm', 'sergi22@gmail.com', '639503672', '2025-02-06 00:00:00', NULL, 1),
+(2, 'Jordi', '$2y$10$JiHg6AE83a4wVWZV34epDO/xPDXPhafdnsNA2TQ.tiZqat8BcxTC2', 'jordi2@gmail.com', '639503672', '2025-02-13 00:00:00', NULL, 0),
+(3, 'Sergi Casiano', '$2y$10$F6FwP2JSL/Bx9XkSj56pxuEnJoAPn88LkbL3g8ZOFCv7TCQrZPPBK', 'sergi4@gmail.com', '639503663', '2025-02-18 00:00:00', NULL, 1),
+(5, 'Sergi Casiano Soler', '$2y$10$6qpKPrF4TZ7f/KLcktw1Huo/VztVnLdI3w7gRcSCpiwsgPqTJXDji', 'sergi1@gmail.com', NULL, '2025-05-08 16:41:30', NULL, 0),
+(6, 'Carlos Latre', '$2y$10$cCh9KJaRgrOEg3yerOPJq.EC2CZXo0UJUd57XIIQQjvNwFfzxnykW', 'carloslatre@gmail.com', '639503690', '2025-05-08 16:46:14', NULL, 1),
+(7, 'Luis Suarez', '$2y$10$aUbobRVdBpkP9NTKb4FMA.jXzx5QqBied951UiTucFgUlmaXZFgUC', 'luissuarez@email.com', '639503643', '2025-05-10 17:38:12', NULL, 0),
+(8, 'Kolde', '$2y$10$rg4NDHP00E8z3hu56ljOAenXyghp1X8gdU/bhL70ZujQ3BLLbckCe', 'kolde@gmail.com', '966860105', '2025-05-14 02:22:29', NULL, 0),
+(9, 'Jordi', '$2y$10$YhMSqpdYCUwX7Ic3pOcJ9.cFlTp6HbzJmb8Nzh2FZN4k9c1GgtM1y', 'jordi@gmail.com', '123456789', '2025-05-14 02:24:03', '::1', 0);
 
 -- --------------------------------------------------------
 
@@ -1391,7 +1399,7 @@ ALTER TABLE `categorias`
 -- AUTO_INCREMENT de la tabla `comentarios`
 --
 ALTER TABLE `comentarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `contacto`
@@ -1403,13 +1411,13 @@ ALTER TABLE `contacto`
 -- AUTO_INCREMENT de la tabla `detalles_pedido`
 --
 ALTER TABLE `detalles_pedido`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT de la tabla `pedidos`
 --
 ALTER TABLE `pedidos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
@@ -1427,7 +1435,7 @@ ALTER TABLE `tallas`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Restricciones para tablas volcadas
