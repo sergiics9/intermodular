@@ -11,15 +11,15 @@ use App\Core\QueryBuilder;
 class Comentario extends Model
 {
     protected static string $table = 'comentarios';
-    protected static array $fillable = ['producto_id', 'usuario_id', 'texto', 'fecha'];
+    protected static array $fillable = ['producto_id', 'usuario_id', 'texto', 'fecha', 'ip'];
     protected static array $relations = ['producto', 'usuario'];
 
     public function insert(): void
     {
         $sql = "INSERT INTO " . self::$table
-            . " (producto_id, usuario_id, texto, fecha)"
-            . " VALUES (?, ?, ?, ?)";
-        $params = [$this->producto_id, $this->usuario_id, $this->texto, $this->fecha ?? date('Y-m-d H:i:s')];
+            . " (producto_id, usuario_id, texto, fecha, ip)"
+            . " VALUES (?, ?, ?, ?, ?)";
+        $params = [$this->producto_id, $this->usuario_id, $this->texto, $this->fecha ?? date('Y-m-d H:i:s'), $this->ip];
         $this->id = DB::insert($sql, $params);
     }
 

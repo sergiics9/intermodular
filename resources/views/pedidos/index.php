@@ -49,7 +49,7 @@ use App\Core\Auth;
                                         if (isset($pedido->Fecha) && !empty($pedido->Fecha) && $pedido->Fecha != '0000-00-00 00:00:00') {
                                             echo date('d/m/Y H:i', strtotime($pedido->Fecha));
                                         } else {
-                                            echo date('d/m/Y H:i');
+                                            echo 'N/A';
                                         }
                                         ?>
                                     </td>

@@ -41,6 +41,7 @@ class AuthController
         $u->telefono = trim($request->telefono);
         $u->contraseña = password_hash($request->password, PASSWORD_DEFAULT);
         $u->role = 0; // Usuario regular por defecto
+        $u->ip_registro = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
         $u->save();
 
         session()->set('user', [

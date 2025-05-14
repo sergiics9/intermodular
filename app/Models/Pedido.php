@@ -11,7 +11,7 @@ use App\Core\QueryBuilder;
 class Pedido extends Model
 {
     protected static string $table = 'pedidos';
-    protected static array $fillable = ['UsuarioID', 'Nombre', 'Email', 'Direccion', 'Telefono', 'Total'];
+    protected static array $fillable = ['UsuarioID', 'Nombre', 'Email', 'Direccion', 'Telefono', 'Total', 'Fecha'];
     protected static array $relations = ['detalles', 'usuario'];
 
     public function insert(): void

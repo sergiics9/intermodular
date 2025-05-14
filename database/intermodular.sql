@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 07-03-2025 a las 23:17:21
+-- Tiempo de generación: 14-05-2025 a las 02:04:39
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -181,6 +181,43 @@ CREATE TABLE `colores` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `comentarios`
+--
+
+CREATE TABLE `comentarios` (
+  `id` int(11) NOT NULL,
+  `producto_id` int(11) NOT NULL,
+  `usuario_id` int(11) NOT NULL,
+  `texto` text NOT NULL,
+  `fecha` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `comentarios`
+--
+
+INSERT INTO `comentarios` (`id`, `producto_id`, `usuario_id`, `texto`, `fecha`) VALUES
+(2, 42, 6, 'El papa no es negre', '2025-05-09 18:39:33');
+
+--
+-- Disparadores `comentarios`
+--
+DELIMITER $$
+CREATE TRIGGER `actualizar_contador_comentarios` AFTER INSERT ON `comentarios` FOR EACH ROW BEGIN
+   
+    UPDATE productos 
+    SET num_comentarios = (
+        SELECT COUNT(*) FROM comentarios 
+        WHERE producto_id = NEW.producto_id
+    )
+    WHERE id = NEW.producto_id;
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `contacto`
 --
 
@@ -201,7 +238,8 @@ INSERT INTO `contacto` (`id`, `nombre`, `email`, `mensaje`, `fecha_envio`) VALUE
 (3, 'David', 'sergi4@gmail.com', 'gddfgdfg', '2025-02-18 14:56:07'),
 (5, 'Jordi', 'sergi4@gmail.com', 'asdasdadddddddd', '2025-02-18 14:57:26'),
 (6, 'David', 'sergi4@gmail.com', 'asd', '2025-02-18 14:58:25'),
-(7, 'Jordi', 'sergi20031005@gmail.com', 'asd', '2025-03-04 18:17:20');
+(7, 'Jordi', 'sergi20031005@gmail.com', 'asd', '2025-03-04 18:17:20'),
+(8, 'David', 'prueba@test.com', 'prueba', '2025-03-13 15:31:23');
 
 -- --------------------------------------------------------
 
@@ -236,13 +274,23 @@ CREATE TABLE `descuentos` (
 --
 
 CREATE TABLE `detalles_pedido` (
-  `DetalleID` int(11) NOT NULL,
+  `id` int(11) NOT NULL,
   `PedidoID` int(11) NOT NULL,
   `ProductoID` int(11) NOT NULL,
   `Cantidad` int(11) NOT NULL,
   `Precio` decimal(10,2) NOT NULL,
   `talla` varchar(5) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `detalles_pedido`
+--
+
+INSERT INTO `detalles_pedido` (`id`, `PedidoID`, `ProductoID`, `Cantidad`, `Precio`, `talla`) VALUES
+(30, 44, 45, 1, 65.00, 'L'),
+(31, 45, 44, 1, 39.00, 'XL'),
+(32, 45, 46, 1, 33.00, 'S'),
+(33, 46, 43, 1, 47.00, 'XL');
 
 -- --------------------------------------------------------
 
@@ -435,7 +483,7 @@ CREATE TABLE `paypal` (
 --
 
 CREATE TABLE `pedidos` (
-  `PedidoID` int(11) NOT NULL,
+  `id` int(11) NOT NULL,
   `UsuarioID` int(11) DEFAULT NULL,
   `Nombre` varchar(255) NOT NULL,
   `Email` varchar(255) NOT NULL,
@@ -449,20 +497,12 @@ CREATE TABLE `pedidos` (
 -- Volcado de datos para la tabla `pedidos`
 --
 
-INSERT INTO `pedidos` (`PedidoID`, `UsuarioID`, `Nombre`, `Email`, `Direccion`, `Telefono`, `Fecha`, `Total`) VALUES
-(18, 1, 'Sergi', 'sergi2@gmail.com', 'calle los olmos 7', '639503673', '2025-02-12 17:57:17', 900.00),
-(19, 1, 'David', 'sergi2@gmail.com', 'calle los olmos 7', '639503673', '2025-02-12 19:07:13', 1800.00),
-(20, 1, 'Sergiiiii', 'sergi2@gmail.com', 'calle los olmos 7', '639503673', '2025-02-13 15:51:24', 900.00),
-(21, 1, 'Sergi', 'sergi2@gmail.com', 'calle los olmos 7', '639503673', '2025-02-13 16:37:20', 153.00),
-(22, 1, 'Sergi', 'sergi2@gmail.com', 'calle los olmos 7', '639503673', '2025-02-13 16:39:35', 153.00),
-(23, 1, 'Sergi', 'sergi2@gmail.com', 'calle los olmos 7', '639503673', '2025-02-13 16:42:15', 153.00),
-(24, 1, 'Sergi', 'sergi2@gmail.com', 'calle los olmos 7', '639503673', '2025-02-13 16:43:34', 153.00),
-(25, 1, 'Sergi', 'sergi2@gmail.com', 'calle los olmos 7', '639503673', '2025-02-13 16:46:19', 153.00),
-(26, 1, 'Sergi', 'sergi2@gmail.com', 'calle los olmos 7', '639503673', '2025-02-13 16:47:11', 256.00),
-(27, 1, 'Sergi', 'sergi2@gmail.com', 'calle los olmos 7', '639503673', '2025-02-13 16:51:14', 256.00),
-(28, 3, 'Sergi Casiano Soler', 'sergi4@gmail.com', 'calle los olmos 9', '639503673', '2025-02-18 15:46:44', 198.00),
-(29, 3, 'Sergi Casiano Soler', 'sergi4@gmail.com', 'calle los olmos 9', '639503673', '2025-02-18 15:49:32', 25.00),
-(30, 3, 'Sergi Casiano', 'sergi4@gmail.com', 'Calle fuerteventura 1', '639503663', '2025-02-18 20:53:45', 128.00);
+INSERT INTO `pedidos` (`id`, `UsuarioID`, `Nombre`, `Email`, `Direccion`, `Telefono`, `Fecha`, `Total`) VALUES
+(42, 6, 'Carlos Latre', 'carloslatre@gmail.com', 'Calle fuerteventura, 1', '639503690', '2025-05-13 18:22:29', 32.00),
+(43, 6, 'Carlos Latre', 'carloslatre@gmail.com', 'Calle fuerteventura, 1', '639503690', '2025-05-13 18:24:18', 65.00),
+(44, 6, 'Carlos Latre', 'carloslatre@gmail.com', 'Calle fuerteventura, 1', '639503690', '2025-05-13 18:25:23', 65.00),
+(45, 6, 'Carlos Latre', 'carloslatre@gmail.com', 'Calle fuerteventura, 1', '639503690', '2025-05-13 19:48:12', 72.00),
+(46, 6, 'Carlos Latre', 'carloslatre@gmail.com', 'Calle fuerteventura, 1', '639503690', '2025-05-13 19:53:21', 47.00);
 
 -- --------------------------------------------------------
 
@@ -510,23 +550,24 @@ CREATE TABLE `productos` (
   `precio` decimal(10,2) DEFAULT NULL,
   `descripcion` text DEFAULT NULL,
   `fecha_creacion` datetime DEFAULT current_timestamp(),
-  `categoria_id` int(11) DEFAULT NULL
+  `categoria_id` int(11) DEFAULT NULL,
+  `num_comentarios` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `productos`
 --
 
-INSERT INTO `productos` (`id`, `nombre`, `precio`, `descripcion`, `fecha_creacion`, `categoria_id`) VALUES
-(42, 'Camiseta Corta', 35.00, 'Ligera y fresca, la Camiseta Corta es ideal para los días calurosos o para combinar con tu estilo casual. Su ajuste cómodo y tejido transpirable la hacen una opción perfecta para cualquier ocasión.', '2025-02-20 16:03:22', 1),
-(43, 'Camiseta Cybertruck', 47.00, 'Inspirada en el diseño futurista del Cybertruck, esta camiseta destaca por su estilo audaz y moderno. Perfecta para los fanáticos de la innovación y la tecnología, ofrece un ajuste cómodo y un look vanguardista.', '2025-02-20 16:03:45', 1),
-(44, 'Camiseta Minimalista', 39.00, 'Disfruta del diseño elegante y sencillo de nuestra Camiseta Minimalista. Confeccionada con algodón suave y transpirable, es perfecta para cualquier ocasión, combinando estilo y comodidad.', '2025-02-20 16:04:10', 1),
-(45, 'Sudadera Negra', 65.00, 'Una sudadera clásica y versátil que no puede faltar en tu armario. Hecha con tejido de alta calidad, te mantiene abrigado sin sacrificar el estilo. Ideal para combinar con cualquier outfit.', '2025-02-20 16:04:33', 2),
-(46, 'Camiseta Gris Tesla', 33.00, 'Inspirada en la innovación y la tecnología, esta camiseta gris Tesla es perfecta para los amantes del diseño moderno. Su tejido premium ofrece confort y durabilidad para el día a día.', '2025-02-20 16:04:54', 1),
-(47, 'Camiseta Negra', 45.00, 'Un básico imprescindible. La camiseta negra combina con todo y es ideal tanto para looks casuales como urbanos. Fabricada con materiales de alta calidad para máxima comodidad.', '2025-02-20 16:05:12', 1),
-(48, 'Gorra Gris Tesla', 24.00, 'Protege tu estilo con la Gorra Gris Tesla. Diseño moderno con ajuste perfecto para cualquier tamaño. Ideal para complementar tu outfit y destacar con un toque deportivo y sofisticado.', '2025-02-20 16:05:33', 3),
-(49, 'Sudadera Azul Marino', 65.00, 'Elegante y cómoda, esta sudadera azul marino te ofrece calidez y estilo en un solo producto. Perfecta para el frío y fácil de combinar con cualquier prenda de tu guardarropa.', '2025-02-20 16:05:52', 2),
-(50, 'Camiseta Negra Tesla Logo', 34.00, 'Demuestra tu pasión por Tesla con esta camiseta negra de diseño exclusivo. Con un logo distintivo, es la elección perfecta para quienes buscan una prenda moderna y con personalidad.', '2025-02-20 16:07:57', 1);
+INSERT INTO `productos` (`id`, `nombre`, `precio`, `descripcion`, `fecha_creacion`, `categoria_id`, `num_comentarios`) VALUES
+(42, 'Camiseta Corta', 32.00, 'Ligera y fresca, la Camiseta Corta es ideal para los días calurosos o para combinar con tu estilo casual. Su ajuste cómodo y tejido transpirable la hacen una opción perfecta para cualquier ocasión.', '2025-02-20 16:03:22', 1, 1),
+(43, 'Camiseta Cybertruck', 47.00, 'Inspirada en el diseño futurista del Cybertruck, esta camiseta destaca por su estilo audaz y moderno. Perfecta para los fanáticos de la innovación y la tecnología, ofrece un ajuste cómodo y un look vanguardista.', '2025-02-20 16:03:45', 1, 0),
+(44, 'Camiseta Minimalista', 39.00, 'Disfruta del diseño elegante y sencillo de nuestra Camiseta Minimalista. Confeccionada con algodón suave y transpirable, es perfecta para cualquier ocasión, combinando estilo y comodidad.', '2025-02-20 16:04:10', 1, 0),
+(45, 'Sudadera Negra', 65.00, 'Una sudadera clásica y versátil que no puede faltar en tu armario. Hecha con tejido de alta calidad, te mantiene abrigado sin sacrificar el estilo. Ideal para combinar con cualquier outfit.', '2025-02-20 16:04:33', 2, 0),
+(46, 'Camiseta Gris Tesla', 33.00, 'Inspirada en la innovación y la tecnología, esta camiseta gris Tesla es perfecta para los amantes del diseño moderno. Su tejido premium ofrece confort y durabilidad para el día a día.', '2025-02-20 16:04:54', 1, 0),
+(47, 'Camiseta Negra', 45.00, 'Un básico imprescindible. La camiseta negra combina con todo y es ideal tanto para looks casuales como urbanos. Fabricada con materiales de alta calidad para máxima comodidad.', '2025-02-20 16:05:12', 1, 0),
+(48, 'Gorra Gris Tesla', 24.00, 'Protege tu estilo con la Gorra Gris Tesla. Diseño moderno con ajuste perfecto para cualquier tamaño. Ideal para complementar tu outfit y destacar con un toque deportivo y sofisticado.', '2025-02-20 16:05:33', 3, 0),
+(49, 'Sudadera Azul Marino', 65.00, 'Elegante y cómoda, esta sudadera azul marino te ofrece calidez y estilo en un solo producto. Perfecta para el frío y fácil de combinar con cualquier prenda de tu guardarropa.', '2025-02-20 16:05:52', 2, 0),
+(50, 'Camiseta Negra Tesla Logo', 34.00, 'Demuestra tu pasión por Tesla con esta camiseta negra de diseño exclusivo. Con un logo distintivo, es la elección perfecta para quienes buscan una prenda moderna y con personalidad.', '2025-02-20 16:07:57', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -722,9 +763,6 @@ CREATE TABLE `tallas` (
 --
 
 INSERT INTO `tallas` (`id`, `id_producto`, `tallas`) VALUES
-(49, 42, 'L'),
-(50, 42, 'M'),
-(51, 42, 'XL'),
 (52, 43, 'S'),
 (53, 43, 'M'),
 (54, 43, 'L'),
@@ -742,7 +780,13 @@ INSERT INTO `tallas` (`id`, `id_producto`, `tallas`) VALUES
 (66, 49, 'S'),
 (67, 49, 'M'),
 (68, 50, 'S'),
-(69, 50, 'M');
+(69, 50, 'M'),
+(87, 42, 'XS'),
+(88, 42, 'S'),
+(89, 42, 'M'),
+(90, 42, 'L'),
+(91, 42, 'XL'),
+(92, 42, 'XXL');
 
 -- --------------------------------------------------------
 
@@ -780,7 +824,10 @@ CREATE TABLE `usuarios` (
 INSERT INTO `usuarios` (`id`, `nombre`, `contraseña`, `email`, `telefono`, `fecha_registro`, `role`) VALUES
 (1, 'Sergi', '$2y$10$YEMEl9b.USZXaqJH4EqXqutCObAjD9jrnB/PLBxlEYHXCX40/pGZm', 'sergi22@gmail.com', '639503672', '2025-02-06 00:00:00', 1),
 (2, 'Jordi', '$2y$10$JiHg6AE83a4wVWZV34epDO/xPDXPhafdnsNA2TQ.tiZqat8BcxTC2', 'jordi2@gmail.com', '639503672', '2025-02-13 00:00:00', 0),
-(3, 'Sergi Casiano', '$2y$10$F6FwP2JSL/Bx9XkSj56pxuEnJoAPn88LkbL3g8ZOFCv7TCQrZPPBK', 'sergi4@gmail.com', '639503663', '2025-02-18 00:00:00', 1);
+(3, 'Sergi Casiano', '$2y$10$F6FwP2JSL/Bx9XkSj56pxuEnJoAPn88LkbL3g8ZOFCv7TCQrZPPBK', 'sergi4@gmail.com', '639503663', '2025-02-18 00:00:00', 1),
+(5, 'Sergi Casiano Soler', '$2y$10$6qpKPrF4TZ7f/KLcktw1Huo/VztVnLdI3w7gRcSCpiwsgPqTJXDji', 'sergi1@gmail.com', NULL, '2025-05-08 16:41:30', 0),
+(6, 'Carlos Latre', '$2y$10$cCh9KJaRgrOEg3yerOPJq.EC2CZXo0UJUd57XIIQQjvNwFfzxnykW', 'carloslatre@gmail.com', '639503690', '2025-05-08 16:46:14', 1),
+(7, 'Luis Suarez', '$2y$10$aUbobRVdBpkP9NTKb4FMA.jXzx5QqBied951UiTucFgUlmaXZFgUC', 'luissuarez@email.com', '639503643', '2025-05-10 17:38:12', 0);
 
 -- --------------------------------------------------------
 
@@ -1014,6 +1061,14 @@ ALTER TABLE `colores`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indices de la tabla `comentarios`
+--
+ALTER TABLE `comentarios`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `producto_id` (`producto_id`),
+  ADD KEY `usuario_id` (`usuario_id`);
+
+--
 -- Indices de la tabla `contacto`
 --
 ALTER TABLE `contacto`
@@ -1036,7 +1091,7 @@ ALTER TABLE `descuentos`
 -- Indices de la tabla `detalles_pedido`
 --
 ALTER TABLE `detalles_pedido`
-  ADD PRIMARY KEY (`DetalleID`),
+  ADD PRIMARY KEY (`id`),
   ADD KEY `PedidoID` (`PedidoID`),
   ADD KEY `ProductoID` (`ProductoID`);
 
@@ -1142,7 +1197,7 @@ ALTER TABLE `paypal`
 -- Indices de la tabla `pedidos`
 --
 ALTER TABLE `pedidos`
-  ADD PRIMARY KEY (`PedidoID`),
+  ADD PRIMARY KEY (`id`),
   ADD KEY `UsuarioID` (`UsuarioID`);
 
 --
@@ -1333,40 +1388,46 @@ ALTER TABLE `categorias`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT de la tabla `comentarios`
+--
+ALTER TABLE `comentarios`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT de la tabla `contacto`
 --
 ALTER TABLE `contacto`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `detalles_pedido`
 --
 ALTER TABLE `detalles_pedido`
-  MODIFY `DetalleID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT de la tabla `pedidos`
 --
 ALTER TABLE `pedidos`
-  MODIFY `PedidoID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- AUTO_INCREMENT de la tabla `tallas`
 --
 ALTER TABLE `tallas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Restricciones para tablas volcadas
@@ -1406,6 +1467,13 @@ ALTER TABLE `clientes`
   ADD CONSTRAINT `clientes_ibfk_1` FOREIGN KEY (`id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Filtros para la tabla `comentarios`
+--
+ALTER TABLE `comentarios`
+  ADD CONSTRAINT `comentarios_ibfk_1` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `comentarios_ibfk_2` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Filtros para la tabla `cupones`
 --
 ALTER TABLE `cupones`
@@ -1415,7 +1483,7 @@ ALTER TABLE `cupones`
 -- Filtros para la tabla `detalles_pedido`
 --
 ALTER TABLE `detalles_pedido`
-  ADD CONSTRAINT `detalles_pedido_ibfk_1` FOREIGN KEY (`PedidoID`) REFERENCES `pedidos` (`PedidoID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `detalles_pedido_ibfk_1` FOREIGN KEY (`PedidoID`) REFERENCES `pedidos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `detalles_pedido_ibfk_2` FOREIGN KEY (`ProductoID`) REFERENCES `productos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --

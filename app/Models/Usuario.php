@@ -11,15 +11,15 @@ use App\Core\QueryBuilder;
 class Usuario extends Model
 {
     protected static string $table = 'usuarios';
-    protected static array $fillable = ['nombre', 'contraseña', 'email', 'telefono', 'role'];
+    protected static array $fillable = ['nombre', 'contraseña', 'email', 'telefono', 'role', 'ip_registro'];
     protected static array $relations = ['pedidos'];
 
     public function insert(): void
     {
         $sql = "INSERT INTO " . self::$table
-            . " (nombre, contraseña, email, telefono, role)"
-            . " VALUES (?, ?, ?, ?, ?)";
-        $params = [$this->nombre, $this->contraseña, $this->email, $this->telefono, $this->role];
+            . " (nombre, contraseña, email, telefono, role, ip_registro)"
+            . " VALUES (?, ?, ?, ?, ?, ?)";
+        $params = [$this->nombre, $this->contraseña, $this->email, $this->telefono, $this->role, $this->ip_registro];
         $this->id = DB::insert($sql, $params);
     }
 

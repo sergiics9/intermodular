@@ -24,7 +24,7 @@ use App\Core\DB;
                 <div class="card-body">
                     <div class="mb-3">
                         <p class="mb-1"><strong>Número de pedido:</strong> #<?= $pedido->id ?></p>
-                        <p class="mb-1"><strong>Fecha:</strong> <?= $pedido->Fecha ? date('d/m/Y H:i', strtotime($pedido->Fecha)) : 'N/A' ?></p>
+                        <p class="mb-1"><strong>Fecha:</strong> <?= isset($pedido->Fecha) && !empty($pedido->Fecha) && $pedido->Fecha != '0000-00-00 00:00:00' ? date('d/m/Y H:i', strtotime($pedido->Fecha)) : 'N/A' ?></p>
                         <p class="mb-1"><strong>Estado:</strong> <span class="badge bg-success">Completado</span></p>
                         <p class="mb-0"><strong>Total:</strong> <span class="fw-bold"><?= number_format($pedido->Total, 2) ?> €</span></p>
                     </div>
