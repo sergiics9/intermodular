@@ -43,8 +43,12 @@ use App\Core\Auth; ?>
                 <?php else: ?>
                     <div class="dropdown me-2">
                         <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-user me-1"></i>
-                            <span class="d-none d-md-inline"><?= htmlspecialchars(Auth::user()['nombre']) ?></span>
+                            <?php
+                            $usuario = Auth::user();
+                            $foto = !empty($usuario['foto']) ? BASE_URL . $usuario['foto'] : BASE_URL . '/images/perfiles/default.webp';
+                            ?>
+                            <img src="<?= $foto ?>" alt="Foto de perfil" width="32" height="32" class="rounded-circle me-1" style="object-fit:cover;">
+                            <span class="d-none d-md-inline"><?= htmlspecialchars($usuario['nombre']) ?></span>
                             <?php if (Auth::role() === 1): ?>
                                 <span class="badge bg-danger">Admin</span>
                             <?php endif; ?>
@@ -54,6 +58,11 @@ use App\Core\Auth; ?>
                             <?php if (Auth::role() === 1): ?>
                                 <li><a class="dropdown-item" href="<?= BASE_URL . '/productos/create.php'; ?>">Añadir Producto</a></li>
                                 <li><a class="dropdown-item" href="<?= BASE_URL . '/contacto/admin.php'; ?>">Mensajes de Contacto</a></li>
+                            <?php endif; ?>
+                            <?php if (Auth::check()): ?>
+                                <a href="<?= BASE_URL ?>/usuarios/perfil.php" class="dropdown-item">
+                                    <i class="fas fa-user me-2"></i>Mi Perfil
+                                </a>
                             <?php endif; ?>
                             <li>
                                 <hr class="dropdown-divider">

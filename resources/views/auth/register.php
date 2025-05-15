@@ -9,7 +9,11 @@
                     <?php include __DIR__ . '/../partials/messages.php'; ?>
                     <?php include __DIR__ . '/../partials/errors.php'; ?>
 
-                    <form action="<?= BASE_URL ?>/auth/register.php" method="POST">
+                    <form action="<?= BASE_URL ?>/auth/register.php" method="POST" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="foto" class="form-label">Foto de perfil (opcional)</label>
+                            <input type="file" class="form-control" id="foto" name="foto" accept="image/*">
+                        </div>
                         <div class="mb-3">
                             <label for="nombre" class="form-label">Nombre</label>
                             <input type="text" class="form-control" id="nombre" name="nombre"

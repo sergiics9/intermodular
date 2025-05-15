@@ -11,7 +11,7 @@ use App\Core\QueryBuilder;
 class Usuario extends Model
 {
     protected static string $table = 'usuarios';
-    protected static array $fillable = ['nombre', 'contraseña', 'email', 'telefono', 'role', 'ip_registro'];
+    protected static array $fillable = ['nombre', 'contraseña', 'email', 'telefono', 'role', 'ip_registro', 'foto'];
     protected static array $relations = ['pedidos'];
 
     public function insert(): void
