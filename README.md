@@ -1,56 +1,135 @@
-# Proyecto Intermodular - 1ºDAW
+# StyleSphere
 
-## Descripción
+**StyleSphere** es una tienda de ropa en línea desarrollada con PHP, JavaScript, HTML y CSS, que permite a los usuarios explorar productos, agregarlos a un carrito de compras y realizar pedidos. Incluye funcionalidades de autenticación, administración de productos, gestión de pedidos y un panel de administración.
 
-Este proyecto es una tienda en línea desarrollada con **HTML, CSS, JavaScript, PHP y MySQL**. Permite la visualización y gestión de productos, así como la administración de usuarios y pedidos mediante un panel de administración.
+## Requisitos
 
-## Características principales
+- **PHP** 8.2 o superior
+- **MySQL** 5.7 o superior
+- **Servidor web** Apache
 
-### Usuario General
+## Instalación
 
-- **Visualización de productos** con información detallada.
-- **Buscador de productos** para filtrar por nombre.
-- **Registro y login de usuarios** con validación.
-- **Gestión de pedidos**, permitiendo a los usuarios realizar compras.
-- **Página de detalles** de cada producto con descripción ampliada.
+1. **Clona el repositorio**:
 
-### Administrador
+```bash
+git clone https://github.com/sergiics9/intermodular_final.git
+cd intermodular_final
+```
 
-- **Panel de Administración** con funcionalidades avanzadas.
-- **Gestor de productos**:
-  - Añadir nuevos productos.
-  - Modificar productos existentes.
-  - Eliminar productos.
-- **Gestión de usuarios**:
-  - Visualización de usuarios registrados.
-  - Asignación de roles (usuario normal o administrador).
+2. **Configura la base de datos**:
 
-## Tecnologías utilizadas
+- Crea una nueva base de datos llamada `intermodular`.
+- Importa el archivo `database/intermodular.sql` en tu base de datos.
 
-- **Frontend**: HTML, CSS, JavaScript.
-- **Backend**: PHP.
-- **Base de Datos**: MySQL.
+3. **Configura los archivos de entorno**:
 
-## Instalación y configuración
+Edita el archivo `config/db.php` con los datos de conexión a tu base de datos:
 
-1. Clonar este repositorio:
-   ```bash
-   git clone https://github.com/tu-repositorio.git
-   ```
-2. Importar la base de datos desde `database.sql` a MySQL.
-3. Configurar la conexión en el archivo `config.php`:
-   ```php
-   $host = "localhost";
-   $user = "root";
-   $password = "";
-   $database = "nombre_base_datos";
-   ```
-4. Iniciar un servidor local (XAMPP, WAMP, MAMP) y acceder a la carpeta del proyecto desde el navegador.
+```php
+define('DB_HOST', 'localhost');
+define('DB_USER', 'root');
+define('DB_PASS', '');
+define('DB_NAME', 'intermodular');
+```
 
-## Estado del proyecto
+En `config/config.php`, define la URL base:
 
-El proyecto está en desarrollo y se están agregando mejoras de seguridad y diseño.
+```php
+define('BASE_URL', 'http://localhost/stylesphere/public');
+```
 
-## Contribución
+4. **Establece permisos a las carpetas necesarias** (si usas Linux):
 
-Si deseas contribuir, puedes hacer un fork del repositorio y enviar un pull request con mejoras.
+```bash
+chmod -R 755 public/images
+```
+
+5. **Accede desde el navegador**:
+
+```text
+http://localhost/stylesphere/public
+```
+
+## Configuración
+
+### Configuración del Entorno
+
+Puedes activar o desactivar el modo debug en `config/config.php`:
+
+```php
+define('DEBUG', true); // o false en producción
+```
+
+## Uso
+
+### Experiencia del Cliente
+
+1. **Registro / Inicio de Sesión**
+
+   - Los usuarios pueden crear una cuenta y acceder a sus pedidos.
+
+2. **Explorar Productos**
+
+   - Página principal con filtros de categoría, búsqueda y orden.
+
+3. **Carrito de Compras**
+
+   - Agrega productos, selecciona talla y ajusta cantidad.
+
+4. **Formulario de Compra**
+
+   - Introduce los datos de envío y realiza el pedido.
+
+5. **Historial de Pedidos**
+   - Consulta pedidos anteriores y su estado.
+
+## Funciones Administrativas
+
+### Gestión de Productos
+
+- Añadir, editar o eliminar productos con imagen y tallas.
+
+### Gestión de Categorías
+
+- Crear nuevas categorías y editar las existentes.
+
+### Gestión de Pedidos
+
+- Ver todos los pedidos realizados por los usuarios.
+
+### Gestión de Usuarios
+
+- Consultar datos básicos y rol de cada usuario.
+
+## Esquema de Base de Datos
+
+Las tablas principales del sistema son:
+
+- `usuarios`
+- `productos`
+- `categorias`
+- `tallas`
+- `carrito`
+- `pedidos`
+- `detalle_pedido`
+- `comentarios`
+- `contacto`
+
+Puedes ver el esquema completo en el archivo:  
+`database/intermodular.sql`
+
+## Contribuciones
+
+¡Las contribuciones son bienvenidas!
+
+1. Haz un fork del repositorio.
+2. Crea una nueva rama (`feature/nueva-funcionalidad`).
+3. Haz tus cambios y crea un commit.
+4. Sube tu rama y abre un Pull Request.
+
+### Estándares de Código
+
+- Usa comentarios claros en las funciones complejas.
+- Agrupa el código siguiendo el patrón MVC.
+- Prioriza seguridad (validación y sanitización de inputs).
