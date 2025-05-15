@@ -1,4 +1,6 @@
- <img src="public/images/logo.png" alt="Logo StyleSphere" width="500"/>
+<div align="center">
+  <img src="public/images/logo.png" alt="Logo StyleSphere" width="500"/>
+</div>
 
 **StyleSphere** es una tienda de ropa en línea desarrollada con PHP, JavaScript, HTML y CSS...
 
