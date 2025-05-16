@@ -2,7 +2,6 @@
   <img src="public/images/logo.png" alt="Logo StyleSphere" width="500"/>
 </div>
 
-**StyleSphere** es una tienda de ropa en línea desarrollada con PHP, JavaScript, HTML y CSS...
 
 **StyleSphere** es una tienda de ropa en línea desarrollada con PHP, JavaScript, HTML y CSS, que permite a los usuarios explorar productos, agregarlos a un carrito de compras y realizar pedidos. Incluye funcionalidades de autenticación, administración de productos, gestión de pedidos y un panel de administración.
 
