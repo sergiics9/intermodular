@@ -1,0 +1,161 @@
+/* Estilos para el ordenador de productos */
+
+.sort-dropdown {
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 100;
+}
+
+.sort-dropdown .dropdown-menu {
+  min-width: 200px;
+}
+
+.sort-option {
+  cursor: pointer;
+  padding: 8px 16px;
+  transition: background-color 0.2s;
+}
+
+.sort-option:hover {
+  background-color: #f8f9fa;
+}
+
+.sort-option.active {
+  background-color: #e9ecef;
+  font-weight: bold;
+}
+
+/* Estilos para la animación de reordenación */
+.producto-item {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Animación para los productos al reordenar */
+.product-item {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0.7;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estilos para la opción activa en el dropdown */
+.dropdown-item.active {
+  background-color: #0d6efd;
+  color: white;
+}
+
+/* Mejoras visuales para el dropdown */
+.dropdown-menu {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  border: none;
+  border-radius: 0.5rem;
+}
+
+.dropdown-item {
+  padding: 0.5rem 1.5rem;
+  transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+  background-color: rgba(var(--bs-primary-rgb), 0.1);
+}
+
+.dropdown-item.active:hover {
+  background-color: var(--bs-primary);
+}
+
+/* Estilos para el dropdown de ordenación */
+.sort-dropdown .dropdown-toggle {
+  min-width: 200px;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sort-dropdown .dropdown-toggle::after {
+  margin-left: 10px;
+}
+
+.sort-dropdown .dropdown-item.active {
+  background-color: #0d6efd;
+  color: white;
+}
+
+.sort-dropdown .dropdown-item:hover:not(.active) {
+  background-color: #f8f9fa;
+}
+
+/* Estilos para las imágenes de productos */
+.card-img-container {
+  position: relative;
+  width: 100%;
+  padding-top: 100%; /* Relación de aspecto 1:1 (cuadrado) */
+  overflow: hidden;
+}
+
+.card-img-container img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Mantiene la proporción y asegura que toda la imagen sea visible */
+  background-color: #f8f9fa; /* Fondo claro para imágenes con transparencia */
+  transition: transform 0.3s ease;
+}
+
+.card:hover .card-img-container img {
+  transform: scale(1.05);
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .sort-dropdown {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .sort-dropdown button {
+    width: 100%;
+    text-align: left;
+  }
+
+  .sort-dropdown .dropdown-menu {
+    width: 100%;
+  }
+
+  .card-img-container {
+    padding-top: 75%; /* Relación de aspecto 4:3 para móviles */
+  }
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .sort-dropdown .dropdown-toggle {
+    min-width: 150px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Estilos para el texto de ordenación actual */
+#current-sort-text {
+  font-weight: 500;
+}

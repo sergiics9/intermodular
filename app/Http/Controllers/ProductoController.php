@@ -19,24 +19,74 @@ class ProductoController
 {
     public function index()
     {
-        $productos = Producto::all();
-        view('productos.index', compact('productos'));
+        // Obtener parámetros de ordenación
+        $sortBy = $_GET['sort'] ?? 'newest';
+
+        // Construir la consulta SQL base
+        $sql = "SELECT * FROM productos";
+
+        // Añadir cláusula ORDER BY según el criterio de ordenación
+        switch ($sortBy) {
+            case 'price_asc':
+                $sql .= " ORDER BY precio ASC";
+                break;
+            case 'price_desc':
+                $sql .= " ORDER BY precio DESC";
+                break;
+            case 'name_asc':
+                $sql .= " ORDER BY nombre ASC";
+                break;
+            case 'name_desc':
+                $sql .= " ORDER BY nombre DESC";
+                break;
+            case 'newest':
+            default:
+                $sql .= " ORDER BY id DESC";
+                break;
+        }
+
+        // Ejecutar la consulta
+        $productos = DB::select(Producto::class, $sql);
+
+        view('productos.index', compact('productos', 'sortBy'));
     }
 
     public function search(Request $request)
     {
         $q = trim($request->q ?? '');
+        $sortBy = $_GET['sort'] ?? 'newest';
 
         if (empty($q)) {
             redirect('/productos/index.php')->send();
         }
 
-        // Buscar productos que coincidan con el término de búsqueda en nombre o descripción
+        // Construir la consulta SQL base para la búsqueda
         $sql = "SELECT * FROM productos WHERE nombre LIKE ? OR descripcion LIKE ?";
         $params = ["%$q%", "%$q%"];
+
+        // Añadir cláusula ORDER BY según el criterio de ordenación
+        switch ($sortBy) {
+            case 'price_asc':
+                $sql .= " ORDER BY precio ASC";
+                break;
+            case 'price_desc':
+                $sql .= " ORDER BY precio DESC";
+                break;
+            case 'name_asc':
+                $sql .= " ORDER BY nombre ASC";
+                break;
+            case 'name_desc':
+                $sql .= " ORDER BY nombre DESC";
+                break;
+            case 'newest':
+            default:
+                $sql .= " ORDER BY id DESC";
+                break;
+        }
+
         $productos = DB::select(Producto::class, $sql, $params);
 
-        view('productos.search', compact('productos', 'q'));
+        view('productos.search', compact('productos', 'q', 'sortBy'));
     }
 
     public function show(int $id)

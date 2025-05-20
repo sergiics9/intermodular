@@ -12,9 +12,9 @@ $tallas = $producto->tallas()->get();
         <div class="col-md-6 mb-4">
             <div class="product-image-container">
                 <img src="<?= BASE_URL ?>/images/<?= $producto->id ?>.webp"
-                    class="img-fluid rounded shadow"
+                    class="img-fluid rounded"
                     alt="<?= htmlspecialchars($producto->nombre) ?>"
-                    style="width: 100%; max-height: 500px; object-fit: cover;">
+                    onerror="this.src='<?= BASE_URL ?>/images/placeholder.svg'">
             </div>
         </div>
 
@@ -86,10 +86,12 @@ $tallas = $producto->tallas()->get();
                 ?>
                     <div class="col-md-3 col-sm-6 mb-4">
                         <div class="card h-100 shadow-sm">
-                            <img src="<?= BASE_URL ?>/images/<?= $productoRelacionado->id ?>.webp"
-                                class="card-img-top"
-                                alt="<?= htmlspecialchars($productoRelacionado->nombre) ?>"
-                                style="height: 200px; object-fit: cover;">
+                            <div class="card-img-container">
+                                <img src="<?= BASE_URL ?>/images/<?= $productoRelacionado->id ?>.webp"
+                                    class="card-img-top"
+                                    alt="<?= htmlspecialchars($productoRelacionado->nombre) ?>"
+                                    onerror="this.src='<?= BASE_URL ?>/images/placeholder.svg'">
+                            </div>
                             <div class="card-body">
                                 <h5 class="card-title"><?= htmlspecialchars($productoRelacionado->nombre) ?></h5>
                                 <p class="card-text text-primary fw-bold"><?= number_format($productoRelacionado->precio, 2) ?>€</p>
@@ -230,5 +232,24 @@ $tallas = $producto->tallas()->get();
 
     .size-radio:checked+.size-option:hover {
         background-color: #0b5ed7;
+    }
+
+    /* Estilos para la imagen principal del producto */
+    .product-image-container {
+        position: relative;
+        width: 100%;
+        background-color: #f8f9fa;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1rem;
+    }
+
+    .product-image-container img {
+        width: 100%;
+        max-height: 500px;
+        object-fit: contain;
+        display: block;
+        margin: 0 auto;
     }
 </style>
