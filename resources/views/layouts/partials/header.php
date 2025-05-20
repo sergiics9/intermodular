@@ -6,7 +6,7 @@ use App\Core\Auth; ?>
         <div class="row py-3 align-items-center">
             <!-- Logo -->
             <div class="col-auto me-auto">
-                <a href="<?= BASE_URL ?>/productos" class="d-flex align-items-center text-decoration-none">
+                <a href="<?= BASE_URL ?>" class="d-flex align-items-center text-decoration-none">
                     <img src="<?= BASE_URL ?>/images/logo.png" alt="STYLESPHERE" height="40" class="me-2">
                     <span class="brand-title d-none d-sm-inline">STYLESPHERE</span>
                 </a>
@@ -54,7 +54,7 @@ use App\Core\Auth; ?>
                             <?php endif; ?>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                            <li><a class="dropdown-item" href="<?= BASE_URL . '/pedidos/index.php'; ?>">Mis Pedidos</a></li>
+                            <li><a class="dropdown-item" href="<?= BASE_URL . '/pedidos/index.php'; ?>">Pedidos</a></li>
                             <?php if (Auth::role() === 1): ?>
                                 <li><a class="dropdown-item" href="<?= BASE_URL . '/productos/create.php'; ?>">Añadir Producto</a></li>
                                 <li><a class="dropdown-item" href="<?= BASE_URL . '/contacto/admin.php'; ?>">Mensajes de Contacto</a></li>

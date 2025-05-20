@@ -35,7 +35,7 @@ class ComentarioController
         $comentario->usuario_id = Auth::id();
         $comentario->texto = htmlspecialchars(trim($request->texto));
         $comentario->ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
-        $comentario->fecha = date('Y-m-d H:i:s'); // Añadir esta línea para establecer la fecha actual
+        $comentario->fecha = date('Y-m-d H:i:s');
         $comentario->save();
 
         // Redireccionar de vuelta a la página del producto

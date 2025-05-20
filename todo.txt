@@ -1,3 +1,1 @@
-cuando entro a mis pedidos todos se muestran con la fecha actual y hora 
-y cuando entro dentro del pedido la fecha se muestra como N/A.
-
+fotos de perfil y filtros

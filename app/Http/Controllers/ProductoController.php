@@ -23,7 +23,6 @@ class ProductoController
         view('productos.index', compact('productos'));
     }
 
-    // Añadir el método search después del método index
     public function search(Request $request)
     {
         $q = trim($request->q ?? '');

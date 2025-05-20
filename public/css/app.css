@@ -1,4 +1,3 @@
-/* Al principio del archivo, añadir variables CSS para los temas */
 :root {
   --bg-primary: #ffffff;
   --bg-secondary: #f8f9fa;
@@ -33,7 +32,6 @@
   --dropdown-border: rgba(255, 255, 255, 0.15);
 }
 
-/* General Styles */
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background-color: var(--bg-secondary);
@@ -54,7 +52,6 @@ main {
   gap: 1rem;
 }
 
-/* Modern Header Styles */
 .modern-header {
   background-color: var(--header-bg);
   box-shadow: 0 2px 10px var(--shadow-color);
@@ -116,7 +113,6 @@ main {
   background-color: rgba(13, 110, 253, 0.1);
 }
 
-/* Modern Footer Styles */
 .modern-footer {
   background-color: var(--footer-bg);
   border-top: 1px solid var(--border-color);
@@ -163,7 +159,6 @@ main {
   color: #0d6efd;
 }
 
-/* Auth Forms */
 .auth-form {
   max-width: 500px;
   margin: 0 auto;
@@ -174,7 +169,6 @@ main {
   box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 
-/* Card Styles */
 .card {
   border-radius: 0.5rem;
   overflow: hidden;
@@ -192,9 +186,6 @@ main {
   font-weight: 600;
 }
 
-/* Añadir después de los estilos de las tarjetas */
-
-/* Corregir el fondo de las imágenes de productos en modo oscuro */
 [data-theme="dark"] .card {
   background-color: var(--card-bg);
   border-color: var(--border-color);
@@ -207,19 +198,16 @@ main {
   border-bottom: 1px solid var(--border-color);
 }
 
-/* Añadir un borde sutil a las imágenes para separarlas del fondo */
 [data-theme="dark"] .card-img-top {
   border-bottom: 1px solid var(--border-color);
 }
 
-/* Asegurar que los contenedores de imágenes tengan el fondo correcto */
 [data-theme="dark"] .card > img,
 [data-theme="dark"] .card > a > img,
 [data-theme="dark"] .card-img-container {
   background-color: var(--card-bg);
 }
 
-/* Corregir el fondo de las tarjetas de productos en todas las vistas */
 [data-theme="dark"] .product-card,
 [data-theme="dark"] .col .card,
 [data-theme="dark"] .col-md-3 .card,
@@ -230,31 +218,26 @@ main {
   border-color: var(--border-color);
 }
 
-/* Asegurar que las imágenes en la página de detalles tengan el fondo correcto */
 [data-theme="dark"] .product-image-container img {
   background-color: var(--card-bg);
 }
 
-/* Añadir un borde sutil a las imágenes de vista previa */
 [data-theme="dark"] .img-thumbnail {
   background-color: var(--card-bg);
   border-color: var(--border-color);
 }
 
-/* Eliminar el fondo blanco de las tarjetas en modo oscuro */
 [data-theme="dark"] .card.h-100.shadow-sm.border-0.product-card,
 [data-theme="dark"] .card.h-100.shadow-sm.border-0 {
   background-color: #1e1e1e !important;
 }
 
-/* Asegurar que las imágenes no tengan fondo blanco */
 [data-theme="dark"] .card-img-top,
 [data-theme="dark"] .card > a > div,
 [data-theme="dark"] .card > a {
   background-color: #1e1e1e !important;
 }
 
-/* Button Styles */
 .btn {
   border-radius: 0.25rem;
   padding: 0.5rem 1rem;
@@ -271,7 +254,6 @@ main {
   border-color: #0a58ca;
 }
 
-/* Product Cards */
 .product-card {
   height: 100%;
   display: flex;
@@ -282,7 +264,6 @@ main {
   flex: 1;
 }
 
-/* Size Options */
 .size-options {
   display: flex;
   gap: 0.5rem;
@@ -309,7 +290,6 @@ main {
   border-color: #0d6efd;
 }
 
-/* Product Details Page */
 .product-image-container {
   border-radius: 0.5rem;
   overflow: hidden;
@@ -328,7 +308,6 @@ main {
   gap: 0.5rem;
 }
 
-/* Footer */
 footer {
   margin-top: auto;
   padding: 1.5rem 0;
@@ -336,7 +315,6 @@ footer {
   color: white;
 }
 
-/* Theme Toggle Button */
 .theme-toggle {
   cursor: pointer;
   padding: 0.5rem;
@@ -368,7 +346,6 @@ footer {
   display: inline-flex;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .size-options {
     flex-wrap: wrap;
@@ -379,7 +356,6 @@ footer {
   }
 }
 
-/* Añadir estilos para los dropdowns en modo oscuro */
 [data-theme="dark"] .dropdown-menu {
   background-color: var(--dropdown-bg);
   border-color: var(--dropdown-border);
@@ -412,7 +388,6 @@ footer {
   color: var(--text-primary);
 }
 
-/* Asegurar que los textos sean legibles en modo oscuro */
 [data-theme="dark"] .card-title,
 [data-theme="dark"] h1,
 [data-theme="dark"] h2,
@@ -428,7 +403,6 @@ footer {
   color: var(--text-muted) !important;
 }
 
-/* Corregir los inputs y formularios en modo oscuro */
 [data-theme="dark"] .form-control,
 [data-theme="dark"] .form-select {
   background-color: var(--bg-primary);
@@ -442,7 +416,6 @@ footer {
   color: var(--text-primary);
 }
 
-/* Corregir las tablas en modo oscuro */
 [data-theme="dark"] .table {
   color: var(--text-primary);
 }
@@ -457,7 +430,6 @@ footer {
   color: var(--text-primary);
 }
 
-/* Corregir los alerts en modo oscuro */
 [data-theme="dark"] .alert-info,
 [data-theme="dark"] .alert-light {
   background-color: #2c3e50;
@@ -465,7 +437,6 @@ footer {
   border-color: #34495e;
 }
 
-/* Corregir los modales en modo oscuro */
 [data-theme="dark"] .modal-content {
   background-color: var(--card-bg);
   color: var(--text-primary);
@@ -477,7 +448,6 @@ footer {
   border-color: var(--border-color);
 }
 
-/* Corregir los botones outline en modo oscuro */
 [data-theme="dark"] .btn-outline-secondary,
 [data-theme="dark"] .btn-outline-primary {
   color: var(--text-primary);

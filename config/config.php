@@ -1,6 +1,6 @@
 <?php
 
-define('BASE_URL', 'http://localhost/intermodular_final/public');
+define('BASE_URL', 'http://localhost/intermodular/public');
 
 
 // Ruta de inicio para redirecciones o accesos comunes

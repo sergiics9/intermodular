@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-require_once __DIR__ . '/../../Models/Contacto.php'; // Añadir esta línea
+require_once __DIR__ . '/../../Models/Contacto.php';
 
 use App\Core\Request;
 use App\Core\Auth;

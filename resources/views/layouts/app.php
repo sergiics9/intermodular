@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Variable: $title -->
-    <title><?= $title ?? 'Tienda Online' ?></title>
+    <title><?= $title ?? 'STYLESPHERE | Inicio' ?></title>
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="<?= BASE_URL ?>/images/favicon.ico">
