@@ -51,27 +51,35 @@ class UsuarioController
 
         // Subida de foto
         if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
-            $ext = strtolower(pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION));
-            $filename = $usuario->id . '.' . $ext;
+            // Asegurar que la carpeta existe
             $carpeta = __DIR__ . '/../../../public/images/perfiles/';
             if (!is_dir($carpeta)) {
                 mkdir($carpeta, 0777, true);
             }
+
+            // Usar el ID del usuario como nombre de archivo
+            $filename = $usuario->id . '.webp';
             $destino = $carpeta . $filename;
-            move_uploaded_file($_FILES['foto']['tmp_name'], $destino);
-            $usuario->foto = '/images/perfiles/' . $filename;
+
+            // Mover el archivo subido
+            if (move_uploaded_file($_FILES['foto']['tmp_name'], $destino)) {
+                $usuario->foto = '/images/perfiles/' . $filename;
+            }
         }
 
         $usuario->save();
 
-        // Actualizar sesión
+        // Obtener el usuario actualizado de la base de datos
+        $usuarioActualizado = Usuario::find($usuario->id);
+
+        // Actualizar sesión con todos los datos, incluida la foto
         session()->set('user', [
-            'id' => $usuario->id,
-            'nombre' => $usuario->nombre,
-            'email' => $usuario->email,
-            'telefono' => $usuario->telefono,
-            'role' => $usuario->role,
-            'foto' => $usuario->foto ?? null,
+            'id' => $usuarioActualizado->id,
+            'nombre' => $usuarioActualizado->nombre,
+            'email' => $usuarioActualizado->email,
+            'telefono' => $usuarioActualizado->telefono,
+            'role' => $usuarioActualizado->role,
+            'foto' => $usuarioActualizado->foto ?? null,
         ]);
 
         redirect('/usuarios/perfil.php')->with('success', 'Perfil actualizado correctamente')->send();

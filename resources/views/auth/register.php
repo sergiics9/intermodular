@@ -13,6 +13,7 @@
                         <div class="mb-3">
                             <label for="foto" class="form-label">Foto de perfil (opcional)</label>
                             <input type="file" class="form-control" id="foto" name="foto" accept="image/*">
+                            <div class="form-text">Sube una imagen para tu perfil. Se guardará automáticamente con tu ID de usuario.</div>
                         </div>
                         <div class="mb-3">
                             <label for="nombre" class="form-label">Nombre</label>

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Core;
 
 use App\Models\Usuario;
@@ -10,21 +8,35 @@ class Auth
 {
     public static function attempt(array $credentials): bool
     {
-        $email = $credentials['email'] ?? '';
-        $password = $credentials['password'] ?? '';
-        $u = Usuario::where('email', $email)->first();
+        $email = $credentials['email'];
+        $password = $credentials['password'];
 
-        if ($u && password_verify($password, $u->contraseña)) {
-            session()->set('user', [
-                'id' => $u->id,
-                'nombre' => $u->nombre,
-                'email' => $u->email,
-                'telefono' => $u->telefono,
-                'role' => $u->role,
-            ]);
-            return true;
+        $user = Usuario::where('email', $email)->first();
+
+        if (!$user) {
+            return false;
         }
-        return false;
+
+        if (!password_verify($password, $user->contraseña)) {
+            return false;
+        }
+
+        // Guardar usuario en sesión con todos sus datos, incluida la foto
+        session()->set('user', [
+            'id' => $user->id,
+            'nombre' => $user->nombre,
+            'email' => $user->email,
+            'telefono' => $user->telefono,
+            'role' => $user->role,
+            'foto' => $user->foto ?? null,
+        ]);
+
+        return true;
+    }
+
+    public static function check(): bool
+    {
+        return session()->has('user');
     }
 
     public static function user(): ?array
@@ -32,31 +44,18 @@ class Auth
         return session()->get('user');
     }
 
-    public static function check(): bool
-    {
-        return self::user() !== null;
-    }
-
     public static function id(): ?int
     {
-        $user = self::user(); // Obtener el usuario una vez
-        return $user ? (int)$user['id'] : null; // Verificar si no es null y convertir a int
+        return self::user()['id'] ?? null;
     }
 
     public static function role(): ?int
     {
-        $user = self::user(); // Obtener el usuario una vez
-
-        // Depuración para verificar el valor del rol
-        if ($user) {
-            $role = (int)$user['role'];
-            return $role;
-        }
-        return null;
+        return self::user()['role'] ?? null;
     }
 
     public static function logout(): void
     {
-        session()->invalidate();
+        session()->remove('user');
     }
 }

@@ -42,17 +42,45 @@ class AuthController
         $u->contraseña = password_hash($request->password, PASSWORD_DEFAULT);
         $u->role = 0; // Usuario regular por defecto
         $u->ip_registro = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
-        $u->save();
+
+        // Procesar la foto de perfil si se ha subido
+        if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+            $carpeta = __DIR__ . '/../../../public/images/perfiles/';
+            if (!is_dir($carpeta)) {
+                mkdir($carpeta, 0777, true);
+            }
+
+            // Primero guardamos el usuario para obtener su ID
+            $u->save();
+
+            // Usar el ID del usuario como nombre de archivo
+            $filename = $u->id . '.webp';
+            $destino = $carpeta . $filename;
+
+            // Mover el archivo subido
+            if (move_uploaded_file($_FILES['foto']['tmp_name'], $destino)) {
+                $u->foto = '/images/perfiles/' . $filename;
+                // Guardar nuevamente para actualizar la foto
+                $u->save();
+            }
+        } else {
+            // Si no hay foto, simplemente guardamos el usuario
+            $u->save();
+        }
+
+        // Obtener el usuario completo de la base de datos para asegurarnos de tener todos los datos
+        $usuario = Usuario::find($u->id);
 
         session()->set('user', [
-            'id' => $u->id,
-            'nombre' => $u->nombre,
-            'email' => $u->email,
-            'telefono' => $u->telefono,
-            'role' => $u->role,
+            'id' => $usuario->id,
+            'nombre' => $usuario->nombre,
+            'email' => $usuario->email,
+            'telefono' => $usuario->telefono,
+            'role' => $usuario->role,
+            'foto' => $usuario->foto ?? null,
         ]);
 
-        redirect('/productos/index.php')->with('success', "¡Bienvenido, $u->nombre!")->send();
+        redirect('/productos/index.php')->with('success', "¡Bienvenido, $usuario->nombre!")->send();
     }
 
     public function logout()

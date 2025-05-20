@@ -45,9 +45,9 @@ use App\Core\Auth; ?>
                         <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             <?php
                             $usuario = Auth::user();
-                            $foto = !empty($usuario['foto']) ? BASE_URL . $usuario['foto'] : BASE_URL . '/images/perfiles/default.webp';
+                            $fotoUrl = !empty($usuario['foto']) ? BASE_URL . $usuario['foto'] : BASE_URL . '/images/perfiles/default.webp';
                             ?>
-                            <img src="<?= $foto ?>" alt="Foto de perfil" width="32" height="32" class="rounded-circle me-1" style="object-fit:cover;">
+                            <img src="<?= $fotoUrl ?>" alt="Foto de perfil" width="32" height="32" class="rounded-circle me-1" style="object-fit:cover;">
                             <span class="d-none d-md-inline"><?= htmlspecialchars($usuario['nombre']) ?></span>
                             <?php if (Auth::role() === 1): ?>
                                 <span class="badge bg-danger">Admin</span>

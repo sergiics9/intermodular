@@ -16,19 +16,35 @@ class Usuario extends Model
 
     public function insert(): void
     {
-        $sql = "INSERT INTO " . self::$table
-            . " (nombre, contraseña, email, telefono, role, ip_registro)"
-            . " VALUES (?, ?, ?, ?, ?, ?)";
-        $params = [$this->nombre, $this->contraseña, $this->email, $this->telefono, $this->role, $this->ip_registro];
+        // Verificar si tenemos una foto para incluir en la inserción
+        if (isset($this->foto)) {
+            $sql = "INSERT INTO " . self::$table
+                . " (nombre, contraseña, email, telefono, role, ip_registro, foto)"
+                . " VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $params = [$this->nombre, $this->contraseña, $this->email, $this->telefono, $this->role, $this->ip_registro, $this->foto];
+        } else {
+            $sql = "INSERT INTO " . self::$table
+                . " (nombre, contraseña, email, telefono, role, ip_registro)"
+                . " VALUES (?, ?, ?, ?, ?, ?)";
+            $params = [$this->nombre, $this->contraseña, $this->email, $this->telefono, $this->role, $this->ip_registro];
+        }
         $this->id = DB::insert($sql, $params);
     }
 
     public function update(): void
     {
-        $sql = "UPDATE " . self::$table
-            . " SET nombre = ?, contraseña = ?, email = ?, telefono = ?, role = ?"
-            . " WHERE id = ?";
-        $params = [$this->nombre, $this->contraseña, $this->email, $this->telefono, $this->role, $this->id];
+        // Verificar si tenemos una foto para incluir en la actualización
+        if (isset($this->foto)) {
+            $sql = "UPDATE " . self::$table
+                . " SET nombre = ?, contraseña = ?, email = ?, telefono = ?, role = ?, foto = ?"
+                . " WHERE id = ?";
+            $params = [$this->nombre, $this->contraseña, $this->email, $this->telefono, $this->role, $this->foto, $this->id];
+        } else {
+            $sql = "UPDATE " . self::$table
+                . " SET nombre = ?, contraseña = ?, email = ?, telefono = ?, role = ?"
+                . " WHERE id = ?";
+            $params = [$this->nombre, $this->contraseña, $this->email, $this->telefono, $this->role, $this->id];
+        }
         DB::update($sql, $params);
     }
 
