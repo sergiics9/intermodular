@@ -25,7 +25,9 @@ class AuthController
             redirect('/productos/index.php')->with('success', "Bienvenido, $nombre")->send();
         }
 
-        back()->with('error', 'Credenciales incorrectas')->send();
+        // Change this line to ensure errors are displayed immediately
+        session()->flash('error', 'Credenciales incorrectas');
+        back()->withInput(['email' => $request->email])->send();
     }
 
     public function showRegisterForm(): void
@@ -80,6 +82,7 @@ class AuthController
             'foto' => $usuario->foto ?? null,
         ]);
 
+        // After successful registration
         redirect('/productos/index.php')->with('success', "¡Bienvenido, $usuario->nombre!")->send();
     }
 

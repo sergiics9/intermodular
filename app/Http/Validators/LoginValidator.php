@@ -31,9 +31,12 @@ class LoginValidator
         }
 
         if ($errors) {
-            back()->withErrors($errors)->withInput([
+            // Ensure errors are flashed to session immediately
+            session()->flash('errors', $errors);
+            back()->withInput([
                 'email' => $request->email,
             ])->send();
+            exit; // Add exit to prevent further execution
         }
     }
 }

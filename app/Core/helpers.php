@@ -53,12 +53,12 @@ function session(): Session
  */
 function formDefaults(array $fields, ?object $model = null): array
 {
-    $session = new Session();
+    $session = session();
     $old = $session->getFlash('old', []);
     $values = [];
 
     foreach ($fields as $field) {
-        $values[$field] = $old[$field] ?? $model?->$field ?? '';
+        $values[$field] = $old[$field] ?? ($model?->$field ?? '');
     }
 
     return $values;
@@ -111,4 +111,89 @@ function back(): Response
 function previousUrl(): string
 {
     return $_SERVER['HTTP_REFERER'] ?? HOME;
+}
+
+/**
+ * Obtiene un valor antiguo del formulario.
+ */
+function old(string $key, $default = '')
+{
+    $old = session()->getFlash('old', []);
+    return $old[$key] ?? $default;
+}
+
+/**
+ * Obtiene un mensaje de error para un campo específico.
+ */
+function error(string $key): ?string
+{
+    $errors = session()->getFlash('errors', []);
+    return $errors[$key] ?? null;
+}
+
+/**
+ * Verifica si hay un error para un campo específico.
+ */
+function has_error(string $key): bool
+{
+    $errors = session()->getFlash('errors', []);
+    return isset($errors[$key]);
+}
+
+/**
+ * Genera un token CSRF.
+ */
+function csrf_token(): string
+{
+    $token = session()->get('_token');
+    if (!$token) {
+        $token = bin2hex(random_bytes(32));
+        session()->set('_token', $token);
+    }
+    return $token;
+}
+
+/**
+ * Genera un campo oculto con el token CSRF.
+ */
+function csrf_field(): string
+{
+    return '<input type="hidden" name="_token" value="' . csrf_token() . '">';
+}
+
+/**
+ * Genera un campo oculto con el método HTTP.
+ */
+function method_field(string $method): string
+{
+    return '<input type="hidden" name="_method" value="' . $method . '">';
+}
+
+/**
+ * Genera una URL para un activo.
+ */
+function asset(string $path): string
+{
+    return BASE_URL . '/' . ltrim($path, '/');
+}
+
+/**
+ * Genera una URL completa.
+ */
+function url(string $path): string
+{
+    return BASE_URL . '/' . ltrim($path, '/');
+}
+
+/**
+ * Función de depuración.
+ */
+function dd(...$vars): void
+{
+    foreach ($vars as $var) {
+        echo '<pre>';
+        var_dump($var);
+        echo '</pre>';
+    }
+    die();
 }

@@ -64,12 +64,15 @@ class RegisterValidator
 
         // Si hay errores, redirigir con los mensajes
         if ($errors) {
-            back()->withErrors($errors)->withInput([
+            // Ensure errors are flashed to session immediately
+            session()->flash('errors', $errors);
+            back()->withInput([
                 'nombre' => $request->nombre,
                 'email' => $request->email,
                 'telefono' => $request->telefono,
                 'terms' => $request->terms
             ])->send();
+            exit; // Add exit to prevent further execution
         }
     }
 }

@@ -4,7 +4,6 @@ namespace App\Core;
 
 class Session
 {
-
     /**
      * Inicia la sesión si no está ya iniciada.
      */
@@ -13,6 +12,20 @@ class Session
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
+
+        // Initialize flash data storage if it doesn't exist
+        if (!isset($_SESSION['_flash'])) {
+            $_SESSION['_flash'] = [];
+        }
+
+        // Initialize _flash_old for storing flash data that has been accessed
+        if (!isset($_SESSION['_flash_old'])) {
+            $_SESSION['_flash_old'] = [];
+        }
+
+        // Move any accessed flash data from previous request to _flash_old
+        // and clear it after it's been accessed once
+        $this->clearOldFlashData();
     }
 
     /**
@@ -48,15 +61,21 @@ class Session
     }
 
     /**
-     * Obtiene el valor de una variable de sesión flash y lo elimina.
+     * Obtiene el valor de una variable de sesión flash y lo marca para eliminación.
+     * En la próxima petición, la variable será eliminada.
      */
     public function getFlash(string $key, $default = null)
     {
-        if (!isset($_SESSION['_flash'])) {
+        if (!isset($_SESSION['_flash'][$key])) {
             return $default;
         }
-        $value = $_SESSION['_flash'][$key] ?? $default;
-        unset($_SESSION['_flash'][$key]);
+
+        // Get the value
+        $value = $_SESSION['_flash'][$key];
+
+        // Mark this key as accessed so it will be cleared on next request
+        $_SESSION['_flash_old'][$key] = true;
+
         return $value;
     }
 
@@ -73,7 +92,21 @@ class Session
      */
     public function hasFlash(string $key): bool
     {
-        return isset($_SESSION['_flash']) && array_key_exists($key, $_SESSION['_flash']);
+        return isset($_SESSION['_flash'][$key]);
+    }
+
+    /**
+     * Elimina todos los valores flash que han sido accedidos.
+     */
+    private function clearOldFlashData(): void
+    {
+        // Remove flash data that was accessed in the previous request
+        foreach ($_SESSION['_flash_old'] as $key => $accessed) {
+            unset($_SESSION['_flash'][$key]);
+        }
+
+        // Reset the _flash_old array for the current request
+        $_SESSION['_flash_old'] = [];
     }
 
     /**
