@@ -1,1 +1,1 @@
-fotos de perfil y filtros
+crear un trigger donde se vean las acciones que realiza un admin, añadir, crear o editar un producto y luego generar una pagina en la web donde se puedan visualizar estos cambios.
